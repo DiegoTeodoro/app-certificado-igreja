@@ -1,0 +1,28 @@
+.navbar {
+  height: 64px;
+  background: #438EB9;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.navbar__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar__icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  filter: brightness(0) invert(1); /* deixa o ícone branco (bom p/ SVG escuro) */
+}
+
+.navbar__title {
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
