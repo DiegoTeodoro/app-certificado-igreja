@@ -1,1 +1,77 @@
-<p>certificados works!</p>
+<div class="page">
+  <header class="topbar">
+    <div class="title">
+      <h1>Sistema de Cursos • Certificados</h1>
+      <div class="subtitle">Pesquisa rápida de certificados por curso/descrição/instrutor/status</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" (click)="novoCertificado()">+ Novo Certificado</button>
+      <button class="btn ghost" (click)="editarParticipante()">Editar Participante</button>
+    </div>
+  </header>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div class="participant">
+        <div class="avatar">{{ participante.iniciais }}</div>
+        <div>
+          <div class="name">{{ participante.nome }}</div>
+          <div class="hint">Certificados vinculados ao participante</div>
+        </div>
+      </div>
+
+      <div class="tools">
+        <div class="search">
+          <span class="icon">🔎</span>
+          <input
+            type="text"
+            [(ngModel)]="termo"
+            placeholder="Pesquisar curso, instrutor, descrição..."
+            aria-label="Pesquisar certificados"
+          />
+        </div>
+
+        <button class="btn outline" (click)="exportar()">Exportar</button>
+      </div>
+    </div>
+
+    <div class="grid-wrap">
+      <table class="grid" role="table">
+      <thead>
+  <tr>
+    <th class="col-curso">Curso</th>
+    <th class="col-desc">Descrição</th>
+    <th class="col-inst">Instrutor</th>
+    <th class="col-data">Data da realização</th>
+    <th class="col-data">Data de vencimento</th>
+    <th class="col-status">Status</th>
+  </tr>
+</thead>
+
+<tbody>
+  <tr *ngFor="let c of certificadosFiltrados">
+    <td class="col-curso">
+      <div class="curso-text">{{ c.curso }}</div>
+    </td>
+
+    <td class="col-desc descricao">{{ c.descricao }}</td>
+
+    <td class="col-inst">{{ c.instrutor }}</td>
+    <td class="col-data">{{ c.dataRealizacao }}</td>
+    <td class="col-data">{{ c.dataVencimento }}</td>
+
+    <td class="col-status">
+      <span class="status" [class]="statusClass(c.status)">{{ c.status }}</span>
+    </td>
+  </tr>
+</tbody>
+
+      </table>
+    </div>
+
+    <footer class="panel-foot">
+      <div>Total de certificados: {{ certificadosFiltrados.length }}</div>
+    </footer>
+  </section>
+</div>

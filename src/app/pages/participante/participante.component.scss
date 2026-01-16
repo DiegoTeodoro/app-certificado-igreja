@@ -1,0 +1,105 @@
+.page-header {
+  margin-bottom: 16px;
+
+  h1 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 600;
+  }
+
+  p {
+    margin-top: 4px;
+    color: #666;
+    font-size: 20px;
+  }
+}
+
+.card {
+  background: #c3c5ca; /* igual o cadastro de curso */
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-width: 1200px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  input,
+  textarea,
+  select {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 14px;
+    background: #fff;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    outline: none;
+    border-color: #438EB9;
+  }
+}
+
+.form-group.full {
+  grid-column: span 2;
+}
+
+.section-title {
+  grid-column: span 2;
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #4b5a66;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Botões */
+.btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: #438EB9;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #35779c;
+}
+
+.btn-secondary {
+ background: #6c757d; /* cinza (limpar) */
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background: #2e2b2b;
+}

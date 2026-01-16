@@ -1,0 +1,137 @@
+.page-header {
+  margin-bottom: 16px;
+
+  h1 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 600;
+  }
+
+  p {
+    margin-top: 4px;
+    color: #666;
+    font-size: 20px;
+  }
+}
+
+.card {
+  background: #c3c5ca;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  max-width: 1200px;
+}
+
+.row {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* Curso 50% | Participante 50% */
+.row-50-50 {
+  grid-template-columns: 50% 50%;
+}
+
+/* Instrutor 40% */
+.row-40 {
+  grid-template-columns: 40%;
+}
+
+/* Datas 30% | 30% */
+.row-30-30 {
+  grid-template-columns: 30% 30%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  input,
+  textarea {
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    font-size: 14px;
+    background: #fff;
+  }
+
+  input:focus,
+  textarea:focus {
+    outline: none;
+    border-color: #438EB9;
+  }
+}
+
+/* Área de anexo */
+.anexo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.file-name {
+  font-size: 14px;
+  color: #333;
+}
+
+/* Esconde o input "normal" (se quiser manter apenas o botão) */
+.file-input {
+  display: none;
+}
+
+.actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Botões */
+.btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: #438EB9;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: #35779c;
+}
+
+.btn-secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background: #d2d2d2;
+}
+
+/* Responsivo */
+@media (max-width: 900px) {
+  .row-50-50,
+  .row-30-30,
+  .row-40 {
+    grid-template-columns: 1fr;
+  }
+
+  .anexo-area {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,1 +1,89 @@
-<p>lancamentos works!</p>
+<div class="page-header">
+  <h1>Lançamentos</h1>
+  <p>Cadastre o curso realizado pelo participante e anexe o arquivo.</p>
+</div>
+
+<div class="card">
+  <form [formGroup]="form">
+
+    <!-- Curso 50% | Participante 50% -->
+    <div class="row row-50-50">
+      <div class="form-group">
+        <label>Nome do curso *</label>
+        <input type="text" formControlName="nomeCurso" />
+      </div>
+
+      <div class="form-group">
+        <label>Participante *</label>
+        <input type="text" formControlName="participante" />
+      </div>
+    </div>
+
+    <!-- Instrutor 40% -->
+    <div class="row row-40">
+      <div class="form-group">
+        <label>Instrutor *</label>
+        <input type="text" formControlName="instrutor" />
+      </div>
+    </div>
+
+    <!-- Descrição 100% -->
+    <div class="row">
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea rows="3" formControlName="descricao"></textarea>
+      </div>
+    </div>
+
+    <!-- Datas 30% | 30% -->
+    <div class="row row-30-30">
+      <div class="form-group">
+        <label>Data da realização *</label>
+        <input type="date" formControlName="dataRealizacao" />
+      </div>
+
+      <div class="form-group">
+        <label>Data de vencimento *</label>
+        <input type="date" formControlName="dataVencimento" />
+      </div>
+    </div>
+
+    <!-- Anexos -->
+    <div class="row">
+      <div class="form-group">
+        <label>Anexos</label>
+
+        <div class="anexo-area">
+          <input class="file-input" type="file" (change)="onFileSelected($event)" />
+
+        <button type="button" class="btn btn-primary" (click)="filePicker.click()">
+          Anexos
+        </button>
+
+        <input #filePicker type="file" hidden (change)="onFileSelected($event)" />
+
+
+          <span class="file-name" *ngIf="arquivoSelecionado">
+            {{ arquivoSelecionado.name }}
+          </span>
+
+          <span class="file-name" *ngIf="!arquivoSelecionado">
+            Nenhum arquivo selecionado
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn btn-secondary" (click)="limpar()">
+        Limpar
+      </button>
+
+      <button type="button" class="btn btn-primary" (click)="salvar()">
+        Salvar
+      </button>
+    </div>
+
+  </form>
+</div>
+

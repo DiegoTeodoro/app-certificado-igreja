@@ -1,1 +1,62 @@
-<p>novo-curso works!</p>
+<div class="page-header">
+  <h1>Cadastro de Curso</h1>
+  <p>Preencha os dados do curso para cadastro no sistema:</p>
+</div>
+
+<div class="card">
+  <form [formGroup]="form">
+
+    <!-- Linha 1: Código 20% | Nome 80% -->
+    <div class="row row-20-80">
+      <div class="form-group">
+        <label>Código do Curso *</label>
+        <input type="text" formControlName="codigoCurso" />
+      </div>
+
+      <div class="form-group">
+        <label>Nome do Curso *</label>
+        <input type="text" formControlName="nomeCurso" />
+      </div>
+    </div>
+
+    <!-- Linha 2: Instrutor 60% -->
+    <div class="row row-60">
+      <div class="form-group">
+        <label>Instrutor *</label>
+        <input type="text" formControlName="instrutor" />
+      </div>
+    </div>
+
+    <!-- Descrição 100% -->
+    <div class="row">
+      <div class="form-group">
+        <label>Descrição</label>
+        <textarea rows="3" formControlName="descricao"></textarea>
+      </div>
+    </div>
+
+    <!-- Linha: Carga | Validade -->
+    <div class="row row-carga-validade">
+      <div class="form-group">
+        <label>Carga Horária</label>
+        <input type="number" formControlName="cargaHoraria" />
+      </div>
+
+      <div class="form-group">
+        <label>Validade do Certificado (meses)</label>
+        <input type="number" formControlName="validadeCertificado" />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn btn-secondary" (click)="limpar()">
+        Limpar
+      </button>
+
+      <button type="button" class="btn btn-primary" (click)="salvar()">
+        Salvar
+      </button>
+    </div>
+
+  </form>
+</div>
