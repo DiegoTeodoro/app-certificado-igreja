@@ -1,83 +1,91 @@
-<div class="page-header">
-  <h1>Cadastro de Participante</h1>
-  <p>Preencha os dados do participante.</p>
-</div>
-
-<div class="card">
-  <form [formGroup]="form">
-    <div class="form-grid">
-
-      <div class="form-group full">
-        <label>Nome completo *</label>
-        <input type="text" formControlName="nomeCompleto" />
-      </div>
-
-      <div class="form-group">
-        <label>CPF *</label>
-        <input
-          type="text"
-          formControlName="cpf"
-          placeholder="000.000.000-00"
-        />
-      </div>
-
-      <div class="form-group">
-        <label>E-mail *</label>
-        <input
-          type="email"
-          formControlName="email"
-          placeholder="exemplo@email.com"
-        />
-      </div>
-
-      <div class="form-group">
-        <label>Data de cadastro *</label>
-        <input
-          type="date"
-          formControlName="dataCadastro"
-        />
-      </div>
-
-      <div class="form-group">
-        <label>Igreja *</label>
-        <input type="text" formControlName="igreja" />
-      </div>
-
-      <div class="form-group">
-        <label>Status *</label>
-        <select formControlName="status">
-          <option value="ATIVO">Ativo</option>
-          <option value="INATIVO">Inativo</option>
-        </select>
-      </div>
-
-      <div class="form-group full">
-        <label>Observações</label>
-        <textarea rows="3" formControlName="observacoes"></textarea>
-      </div>
-
-      <div class="section-title full">Telefones (até 2)</div>
-
-      <div class="form-group">
-        <label>Telefone 1 *</label>
-        <input type="text" formControlName="telefone1" placeholder="(00) 00000-0000" />
-      </div>
-
-      <div class="form-group">
-        <label>Telefone 2</label>
-        <input type="text" formControlName="telefone2" placeholder="(00) 00000-0000" />
-      </div>
-
+<div class="content">
+  <!-- HEADER igual ao NovoCurso -->
+  <div class="content-header">
+    <div class="title-wrap">
+      <h1>Cadastro de Participante</h1>
+      <p>Preencha os dados do participante.</p>
     </div>
 
-    <div class="actions">
-      <button type="button" class="btn btn-secondary" (click)="limpar()">
-        Limpar
-      </button>
-
-      <button type="button" class="btn btn-primary" (click)="salvar()">
-        Salvar
-      </button>
+    <!-- (opcional) ações no header, se quiser -->
+    <!--
+    <div class="header-actions">
+      <button class="btn btn-ghost" type="button">Voltar</button>
     </div>
-  </form>
+    -->
+  </div>
+
+  <!-- CARD igual ao NovoCurso -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">Dados do participante</div>
+      <div class="card-subtitle">Campos com * são obrigatórios</div>
+    </div>
+
+    <form class="form" [formGroup]="form">
+      <div class="grid">
+        <!-- Nome -->
+        <div class="form-group col-12">
+          <label>Nome completo <span class="req">*</span></label>
+          <input type="text" formControlName="nomeCompleto" />
+        </div>
+
+        <!-- CPF -->
+        <div class="form-group col-6">
+          <label>CPF <span class="req">*</span></label>
+          <input type="text" formControlName="cpf" placeholder="000.000.000-00" />
+        </div>
+
+        <!-- Email -->
+        <div class="form-group col-6">
+          <label>E-mail <span class="req">*</span></label>
+          <input type="email" formControlName="email" placeholder="exemplo@email.com" />
+        </div>
+
+        <!-- Data cadastro -->
+        <div class="form-group col-6">
+          <label>Data de cadastro <span class="req">*</span></label>
+          <input type="date" formControlName="dataCadastro" />
+        </div>
+
+        <!-- Igreja -->
+        <div class="form-group col-6">
+          <label>Igreja <span class="req">*</span></label>
+          <input type="text" formControlName="igreja" />
+        </div>
+
+        <!-- Status -->
+        <div class="form-group col-6">
+          <label>Status <span class="req">*</span></label>
+          <select formControlName="status">
+            <option value="ATIVO">Ativo</option>
+            <option value="INATIVO">Inativo</option>
+          </select>
+        </div>
+
+        <!-- Observações -->
+        <div class="form-group col-12">
+          <label>Observações</label>
+          <textarea rows="3" formControlName="observacoes"></textarea>
+        </div>
+
+        <!-- Telefones -->
+        <div class="col-12 section-title">Telefones (até 2)</div>
+
+        <div class="form-group col-6">
+          <label>Telefone 1 <span class="req">*</span></label>
+          <input type="text" formControlName="telefone1" placeholder="(00) 00000-0000" />
+        </div>
+
+        <div class="form-group col-6">
+          <label>Telefone 2</label>
+          <input type="text" formControlName="telefone2" placeholder="(00) 00000-0000" />
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-ghost" (click)="limpar()">Limpar</button>
+        <button type="button" class="btn btn-primary" (click)="salvar()">Salvar</button>
+      </div>
+    </form>
+  </div>
 </div>

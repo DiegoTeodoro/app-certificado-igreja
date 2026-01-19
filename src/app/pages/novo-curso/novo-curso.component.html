@@ -1,62 +1,76 @@
-<div class="page-header">
-  <h1>Cadastro de Curso</h1>
-  <p>Preencha os dados do curso para cadastro no sistema:</p>
-</div>
+<section class="content">
+  <!-- Cabeçalho do conteúdo (acompanha o layout do sistema) -->
+  <header class="content-header">
+    <div class="title-wrap">
 
-<div class="card">
-  <form [formGroup]="form">
+      <h1>Cadastro de Curso</h1>
+      <p>Preencha os dados do curso para cadastrar no sistema.</p>
+    </div>
+    
 
-    <!-- Linha 1: Código 20% | Nome 80% -->
-    <div class="row row-20-80">
-      <div class="form-group">
-        <label>Código do Curso *</label>
-        <input type="text" formControlName="codigoCurso" />
-      </div>
+  </header>
 
-      <div class="form-group">
-        <label>Nome do Curso *</label>
-        <input type="text" formControlName="nomeCurso" />
-      </div>
+  <!-- Card -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-title">Dados do Curso</div>
+      <div class="card-subtitle">Campos com * são obrigatórios</div>
     </div>
 
-    <!-- Linha 2: Instrutor 60% -->
-    <div class="row row-60">
-      <div class="form-group">
-        <label>Instrutor *</label>
-        <input type="text" formControlName="instrutor" />
+    <form class="form" [formGroup]="form">
+      <div class="grid">
+        <!-- Código -->
+        <div class="form-group col-3">
+          <label for="codigo">Código do Curso <span class="req">*</span></label>
+          <input id="codigo" type="text" formControlName="codigoCurso" placeholder="Ex.: CUR-001" />
+          <small class="hint">Use um código único.</small>
+        </div>
+
+        <!-- Nome -->
+        <div class="form-group col-9">
+          <label for="nome">Nome do Curso <span class="req">*</span></label>
+          <input id="nome" type="text" formControlName="nomeCurso" placeholder="Ex.: NR-10 Segurança em Instalações Elétricas" />
+        </div>
+
+        <!-- Instrutor -->
+        <div class="form-group col-6">
+          <label for="instrutor">Instrutor <span class="req">*</span></label>
+          <input id="instrutor" type="text" formControlName="instrutor" placeholder="Ex.: João da Silva" />
+        </div>
+
+        <!-- Carga -->
+        <div class="form-group col-3">
+          <label for="carga">Carga Horária</label>
+          <input id="carga" type="number" formControlName="cargaHoraria" placeholder="Ex.: 16" />
+        </div>
+
+        <!-- Validade -->
+        <div class="form-group col-3">
+          <label for="validade">Validade (meses)</label>
+          <input id="validade" type="number" formControlName="validadeCertificado" placeholder="Ex.: 12" />
+        </div>
+
+        <!-- Descrição -->
+        <div class="form-group col-12">
+          <label for="descricao">Descrição</label>
+          <textarea
+            id="descricao"
+            rows="4"
+            formControlName="descricao"
+            placeholder="Opcional: descreva objetivo, público-alvo, pré-requisitos, etc."
+          ></textarea>
+        </div>
       </div>
-    </div>
 
-    <!-- Descrição 100% -->
-    <div class="row">
-      <div class="form-group">
-        <label>Descrição</label>
-        <textarea rows="3" formControlName="descricao"></textarea>
+      <!-- Ações (duplicadas aqui embaixo pra UX; se não quiser, pode remover) -->
+      <div class="actions">
+        <button type="button" class="btn btn-ghost" (click)="limpar()">
+          Limpar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="salvar()">
+          Salvar
+        </button>
       </div>
-    </div>
-
-    <!-- Linha: Carga | Validade -->
-    <div class="row row-carga-validade">
-      <div class="form-group">
-        <label>Carga Horária</label>
-        <input type="number" formControlName="cargaHoraria" />
-      </div>
-
-      <div class="form-group">
-        <label>Validade do Certificado (meses)</label>
-        <input type="number" formControlName="validadeCertificado" />
-      </div>
-    </div>
-
-    <div class="actions">
-      <button type="button" class="btn btn-secondary" (click)="limpar()">
-        Limpar
-      </button>
-
-      <button type="button" class="btn btn-primary" (click)="salvar()">
-        Salvar
-      </button>
-    </div>
-
-  </form>
-</div>
+    </form>
+  </div>
+</section>

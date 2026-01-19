@@ -65,7 +65,7 @@ export class CertificadosComponent {
 
     return this.certificados.filter(c => {
       const alvo =
-        ` ${c.curso} ${c.descricao} ${c.instrutor} ${c.dataRealizacao} ${c.dataVencimento} ${c.status}`
+        ` ${c.curso} ${c.descricao} ${c.instrutor} ${c.dataRealizacao} ${c.dataVencimento} ${c.status} `
           .toLowerCase();
       return alvo.includes(t);
     });
