@@ -1,89 +1,124 @@
-<div class="page-header">
-  <h1>Lançamentos</h1>
-  <p>Cadastre o curso realizado pelo participante e anexe o arquivo.</p>
-</div>
+<div class="page-container">
 
-<div class="card">
-  <form [formGroup]="form">
+  <div class="page-header">
+    <h1>Lançamentos</h1>
+    <p>Cadastre o curso realizado pelo participante e anexe o arquivo.</p>
+  </div>
 
-    <!-- Curso 50% | Participante 50% -->
-    <div class="row row-50-50">
-      <div class="form-group">
-        <label>Nome do curso *</label>
-        <input type="text" formControlName="nomeCurso" />
+  <!-- ✅ Alert alinhado com header/card -->
+  <div *ngIf="mostrarAlert"
+       class="alert alert-success alert-dismissible fade show mt-3 alert-lancamentos"
+       role="alert">
+    <strong>Sucesso!</strong> Lançamento salvo com sucesso!
+    <button type="button" class="btn-close" (click)="mostrarAlert = false"></button>
+  </div>
+
+  <div class="card">
+    <form [formGroup]="form">
+
+      <!-- Linha 1: Curso 50% | Participante 50% -->
+      <div class="row row-50-50">
+
+        <!-- CURSO (autocomplete) -->
+        <div class="form-group autocomplete">
+          <label>Nome do curso *</label>
+
+          <input
+            type="text"
+            formControlName="nomeCurso"
+            (focus)="mostrarListaCursos = cursosFiltrados.length > 0"
+            (blur)="fecharListaCursosComDelay()"
+            autocomplete="off"
+          />
+
+          <ul class="autocomplete-list" *ngIf="mostrarListaCursos">
+            <li *ngFor="let c of cursosFiltrados" (click)="selecionarCurso(c)">
+              {{ c.nome_curso }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- PARTICIPANTE (autocomplete) -->
+        <div class="form-group autocomplete">
+          <label>Participante *</label>
+
+          <input
+            type="text"
+            formControlName="participanteNome"
+            (focus)="mostrarListaParticipantes = participantesFiltrados.length > 0"
+            (blur)="fecharListaParticipantesComDelay()"
+            autocomplete="off"
+          />
+
+          <ul class="autocomplete-list" *ngIf="mostrarListaParticipantes">
+            <li *ngFor="let p of participantesFiltrados" (click)="selecionarParticipante(p)">
+              {{ p.nomeCompleto }} <span *ngIf="p.cpf">- {{ p.cpf }}</span>
+            </li>
+          </ul>
+        </div>
+
       </div>
 
-      <div class="form-group">
-        <label>Participante *</label>
-        <input type="text" formControlName="participante" />
-      </div>
-    </div>
+      <!-- Linha 2: Instrutor + Datas -->
+      <div class="row row-instrutor-datas">
+        <div class="form-group">
+          <label>Instrutor *</label>
+          <input type="text" formControlName="instrutor" />
+        </div>
 
-    <!-- Instrutor 40% -->
-    <div class="row row-40">
-      <div class="form-group">
-        <label>Instrutor *</label>
-        <input type="text" formControlName="instrutor" />
-      </div>
-    </div>
+        <div class="form-group">
+          <label>Data da realização *</label>
+          <input type="date" formControlName="dataRealizacao" />
+        </div>
 
-    <!-- Descrição 100% -->
-    <div class="row">
-      <div class="form-group">
-        <label>Descrição</label>
-        <textarea rows="3" formControlName="descricao"></textarea>
-      </div>
-    </div>
-
-    <!-- Datas 30% | 30% -->
-    <div class="row row-30-30">
-      <div class="form-group">
-        <label>Data da realização *</label>
-        <input type="date" formControlName="dataRealizacao" />
-      </div>
-
-      <div class="form-group">
-        <label>Data de vencimento *</label>
-        <input type="date" formControlName="dataVencimento" />
-      </div>
-    </div>
-
-    <!-- Anexos -->
-    <div class="row">
-      <div class="form-group">
-        <label>Anexos</label>
-
-        <div class="anexo-area">
-          <input class="file-input" type="file" (change)="onFileSelected($event)" />
-
-        <button type="button" class="btn btn-primary" (click)="filePicker.click()">
-          Anexos
-        </button>
-
-        <input #filePicker type="file" hidden (change)="onFileSelected($event)" />
-
-
-          <span class="file-name" *ngIf="arquivoSelecionado">
-            {{ arquivoSelecionado.name }}
-          </span>
-
-          <span class="file-name" *ngIf="!arquivoSelecionado">
-            Nenhum arquivo selecionado
-          </span>
+        <div class="form-group">
+          <label>Data de vencimento *</label>
+          <input type="date" formControlName="dataVencimento" />
         </div>
       </div>
-    </div>
 
-    <div class="actions">
-      <button type="button" class="btn btn-secondary" (click)="limpar()">
-        Limpar
-      </button>
+      <!-- Linha 3: Descrição -->
+      <div class="row row-descricao-80">
+        <div class="form-group">
+          <label>Descrição</label>
+          <textarea rows="3" formControlName="descricao"></textarea>
+        </div>
+      </div>
 
-      <button type="button" class="btn btn-primary" (click)="salvar()">
-        Salvar
-      </button>
-    </div>
+      <!-- Linha: Anexos + Botões -->
+      <div class="row row-anexos-acoes">
+        <div class="form-group">
+          <label>Anexos</label>
 
-  </form>
+          <div class="anexo-area">
+            <button type="button" class="btn btn-primary" (click)="filePicker.click()">
+              Anexos
+            </button>
+
+            <input #filePicker type="file" hidden (change)="onFileSelected($event)" />
+
+            <span class="file-name" *ngIf="arquivoSelecionado; else semArquivo">
+              {{ arquivoSelecionado.name }}
+            </span>
+
+            <ng-template #semArquivo>
+              <span class="file-name">Nenhum arquivo selecionado</span>
+            </ng-template>
+          </div>
+        </div>
+
+        <div class="actions actions-inline">
+          <button type="button" class="btn btn-secondary" (click)="limpar()">
+            Limpar
+          </button>
+
+          <button type="button" class="btn btn-primary" (click)="salvar()">
+            Salvar
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
 </div>
-

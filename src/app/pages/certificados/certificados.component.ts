@@ -1,92 +1,61 @@
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-type StatusCertificado = 'Válido' | 'Vencido' | 'A vencer';
-
-interface Certificado {// ex: "NR-10"
-  curso: string;
-  descricao: string;
-  instrutor: string;
-  dataRealizacao: string;   // dd/MM/yyyy (exibição)
-  dataVencimento: string;   // dd/MM/yyyy (exibição)
-  status: StatusCertificado;
-}
+import { CertificadoService, CertificadoDto, StatusCertificado } from '../../../core/certificado.service';
+import { ParticipanteService } from '../../../core/participante.service';
 
 @Component({
   selector: 'app-certificados',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DatePipe],
   templateUrl: './certificados.component.html',
   styleUrl: './certificados.component.scss'
 })
 export class CertificadosComponent {
-  participante = {
-    nome: 'Paulo Roberto Rodrigues Santos',
-    iniciais: 'PR'
-  };
+  private certificadoService = inject(CertificadoService);
+  private participanteService = inject(ParticipanteService);
 
-  termo = '';
+  participante = { nome: '', iniciais: '' };
+  participanteNomeBusca = '';
 
-  // Exemplo (substitua pelo seu retorno da API)
-  certificados: Certificado[] = [
-    {
-      
-      curso: 'NR 10',
-      descricao: 'Treinamento obrigatório para eletricidade (NR-10).',
-      instrutor: 'Everton',
-      dataRealizacao: '11/05/2025',
-      dataVencimento: '11/05/2026',
-      status: 'Válido'
-    },
-    {
-      
-      curso: 'NR 6',
-      descricao: 'Uso e conservação de EPIs.',
-      instrutor: 'Everton',
-      dataRealizacao: '11/05/2025',
-      dataVencimento: '11/05/2026',
-      status: 'Válido'
-    },
-    {
-     
-      curso: 'NR-35',
-      descricao: 'Procedimentos e segurança para altura.',
-      instrutor: 'Everton',
-      dataRealizacao: '11/05/2025',
-      dataVencimento: '11/05/2026',
-      status: 'Válido'
-    }
-  ];
+  certificados: CertificadoDto[] = [];
 
-  get certificadosFiltrados(): Certificado[] {
-    const t = this.termo.trim().toLowerCase();
-    if (!t) return this.certificados;
+  buscarParticipante() {
+    const nome = this.participanteNomeBusca.trim();
+    if (nome.length < 2) return;
 
-    return this.certificados.filter(c => {
-      const alvo =
-        ` ${c.curso} ${c.descricao} ${c.instrutor} ${c.dataRealizacao} ${c.dataVencimento} ${c.status} `
-          .toLowerCase();
-      return alvo.includes(t);
+    this.participanteService.buscarPorNome(nome).subscribe({
+      next: (p) => {
+        this.participante.nome = p.nomeCompleto;
+        this.participante.iniciais = this.getIniciais(p.nomeCompleto);
+
+        this.certificadoService.listarPorParticipante(p.codigo).subscribe({
+          next: (lista) => (this.certificados = lista),
+          error: () => alert('Erro ao carregar certificados.')
+        });
+      },
+      error: (err) => {
+        this.participante = { nome: '', iniciais: '' };
+        this.certificados = [];
+        alert(err?.error?.message ?? 'Participante não encontrado.');
+      }
     });
   }
+
+  private getIniciais(nome: string): string {
+    const parts = nome.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return '';
+    const a = parts[0][0] ?? '';
+    const b = parts.length > 1 ? (parts[parts.length - 1][0] ?? '') : '';
+    return (a + b).toUpperCase();
+  }
+
   statusClass(status: StatusCertificado) {
-  if (status === 'Válido') return 'ok';
-  if (status === 'A vencer') return 'warn';
-  return 'bad';
-}
-
-  novoCertificado() {
-    // navegue/abra modal conforme seu fluxo
-    console.log('Novo certificado');
+    if (status === 'Válido') return 'ok';
+    if (status === 'A vencer') return 'warn';
+    return 'bad';
   }
 
-  editarParticipante() {
-    console.log('Editar participante');
-  }
-
-  exportar() {
-    // aqui você pode gerar CSV/PDF
-    console.log('Exportar', this.certificadosFiltrados);
-  }
+  exportar() { console.log('Exportar', this.certificados); }
+  novoCertificado() { console.log('Novo certificado'); }
 }

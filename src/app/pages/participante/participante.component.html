@@ -1,20 +1,11 @@
 <div class="content">
-  <!-- HEADER igual ao NovoCurso -->
   <div class="content-header">
     <div class="title-wrap">
       <h1>Cadastro de Participante</h1>
       <p>Preencha os dados do participante.</p>
     </div>
-
-    <!-- (opcional) ações no header, se quiser -->
-    <!--
-    <div class="header-actions">
-      <button class="btn btn-ghost" type="button">Voltar</button>
-    </div>
-    -->
   </div>
 
-  <!-- CARD igual ao NovoCurso -->
   <div class="card">
     <div class="card-head">
       <div class="card-title">Dados do participante</div>
@@ -23,62 +14,62 @@
 
     <form class="form" [formGroup]="form">
       <div class="grid">
-        <!-- Nome -->
-        <div class="form-group col-12">
+        <!-- Linha 1 -->
+        <div class="form-group col-9">
           <label>Nome completo <span class="req">*</span></label>
-          <input type="text" formControlName="nomeCompleto" />
+          <input type="text" formControlName="nomeCompleto" maxlength="200" />
         </div>
 
-        <!-- CPF -->
-        <div class="form-group col-6">
-          <label>CPF <span class="req">*</span></label>
-          <input type="text" formControlName="cpf" placeholder="000.000.000-00" />
+        <div class="form-group col-3">
+          <label>CPF </label>
+          <input type="text" formControlName="cpf" placeholder="000.000.000-00" maxlength="20" />
         </div>
 
-        <!-- Email -->
-        <div class="form-group col-6">
-          <label>E-mail <span class="req">*</span></label>
-          <input type="email" formControlName="email" placeholder="exemplo@email.com" />
+        <!-- Linha 2 -->
+        <div class="form-group col-9">
+          <label>E-mail</label>
+          <input type="email" formControlName="email" placeholder="exemplo@email.com" maxlength="200" />
         </div>
 
-        <!-- Data cadastro -->
-        <div class="form-group col-6">
-          <label>Data de cadastro <span class="req">*</span></label>
-          <input type="date" formControlName="dataCadastro" />
+        <div class="form-group col-3">
+          <label>Igreja</label>
+          <input type="text" formControlName="igreja" maxlength="20" />
         </div>
+        
+        <div class="col-12 divider"></div>
 
-        <!-- Igreja -->
-        <div class="form-group col-6">
-          <label>Igreja <span class="req">*</span></label>
-          <input type="text" formControlName="igreja" />
-        </div>
+      <!-- Linha 3: Data + Status + Telefones (tudo na mesma linha) -->
+<div class="col-12 inline-fields row-compact">
+  <div class="form-group date-sm">
+    <label>Data de cadastro <span class="req">*</span></label>
+    <input type="date" formControlName="dataCadastro" />
+  </div>
 
-        <!-- Status -->
-        <div class="form-group col-6">
-          <label>Status <span class="req">*</span></label>
-          <select formControlName="status">
-            <option value="ATIVO">Ativo</option>
-            <option value="INATIVO">Inativo</option>
-          </select>
-        </div>
+  <div class="form-group status-sm">
+    <label>Status <span class="req">*</span></label>
+    <select formControlName="status">
+      <option value="ATIVO">Ativo</option>
+      <option value="INATIVO">Inativo</option>
+    </select>
+  </div>
+
+  <div class="form-group phone-sm">
+    <label>Telefone 1</label>
+    <input type="text" formControlName="telefone1" placeholder="(00) 00000-0000" maxlength="20" />
+  </div>
+
+  <div class="form-group phone-sm">
+    <label>Telefone 2</label>
+    <input type="text" formControlName="telefone2" placeholder="(00) 00000-0000" maxlength="20" />
+  </div>
+</div>
+
+<div class="col-12 divider"></div>
 
         <!-- Observações -->
-        <div class="form-group col-12">
+        <div class="form-group col-8">
           <label>Observações</label>
           <textarea rows="3" formControlName="observacoes"></textarea>
-        </div>
-
-        <!-- Telefones -->
-        <div class="col-12 section-title">Telefones (até 2)</div>
-
-        <div class="form-group col-6">
-          <label>Telefone 1 <span class="req">*</span></label>
-          <input type="text" formControlName="telefone1" placeholder="(00) 00000-0000" />
-        </div>
-
-        <div class="form-group col-6">
-          <label>Telefone 2</label>
-          <input type="text" formControlName="telefone2" placeholder="(00) 00000-0000" />
         </div>
       </div>
 

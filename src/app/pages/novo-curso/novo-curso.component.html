@@ -19,46 +19,33 @@
 
     <form class="form" [formGroup]="form">
       <div class="grid">
-        <!-- Código -->
-        <div class="form-group col-3">
-          <label for="codigo">Código do Curso <span class="req">*</span></label>
-          <input id="codigo" type="text" formControlName="codigoCurso" placeholder="Ex.: CUR-001" />
-          <small class="hint">Use um código único.</small>
-        </div>
-
+      
         <!-- Nome -->
         <div class="form-group col-9">
           <label for="nome">Nome do Curso <span class="req">*</span></label>
-          <input id="nome" type="text" formControlName="nomeCurso" placeholder="Ex.: NR-10 Segurança em Instalações Elétricas" />
+          <input id="nome" type="text" formControlName="nomeCurso"/>
         </div>
-
-        <!-- Instrutor -->
-        <div class="form-group col-6">
-          <label for="instrutor">Instrutor <span class="req">*</span></label>
-          <input id="instrutor" type="text" formControlName="instrutor" placeholder="Ex.: João da Silva" />
-        </div>
-
+         <div class="form-group date-sm">
+            <label>Data de cadastro <span class="req">*</span></label>
+            <input type="date" formControlName="dataCadastro" readonly />
+          </div>
         <!-- Carga -->
         <div class="form-group col-3">
           <label for="carga">Carga Horária</label>
-          <input id="carga" type="number" formControlName="cargaHoraria" placeholder="Ex.: 16" />
+          <input id="carga" type="number" formControlName="cargaHoraria" />
         </div>
 
         <!-- Validade -->
         <div class="form-group col-3">
           <label for="validade">Validade (meses)</label>
-          <input id="validade" type="number" formControlName="validadeCertificado" placeholder="Ex.: 12" />
+          <input id="validade" type="number" formControlName="validadeCertificado" />
         </div>
 
         <!-- Descrição -->
-        <div class="form-group col-12">
+        <div class="form-group col-9">
           <label for="descricao">Descrição</label>
           <textarea
-            id="descricao"
-            rows="4"
-            formControlName="descricao"
-            placeholder="Opcional: descreva objetivo, público-alvo, pré-requisitos, etc."
-          ></textarea>
+            id="descricao" rows="4" formControlName="descricao"></textarea>
         </div>
       </div>
 

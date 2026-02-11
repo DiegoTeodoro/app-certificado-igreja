@@ -25,16 +25,27 @@
   padding: 22px 24px;
 }
 
-/* Header e Card alinhados como no NovoCurso */
-.page-header,
-.card {
+/* ✅ Wrapper que alinha TUDO (header + alert + card) */
+.page-container {
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
+  margin-left: 120px; /* mantém seu layout atual */
+}
+
+/* ✅ Alert alinhado e botão "X" correto */
+.alert-lancamentos {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alert-lancamentos .btn-close {
+  margin-left: auto;
 }
 
 /* ==============================
-   HEADER (vira o "title-wrap")
+   HEADER (title-wrap)
 ============================== */
 .page-header {
   background: var(--header);
@@ -47,7 +58,7 @@
 .page-header h1 {
   margin: 0 0 4px;
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 500;
   color: #fff;
 }
 
@@ -59,7 +70,7 @@
 }
 
 /* ==============================
-   CARD (mesmo do NovoCurso)
+   CARD
 ============================== */
 .card {
   background: var(--card);
@@ -71,7 +82,7 @@
 }
 
 /* ==============================
-   ROWS / GRID (seu layout atual)
+   GRID / ROWS
 ============================== */
 .row {
   display: grid;
@@ -80,20 +91,26 @@
   margin-bottom: 14px;
 }
 
+/* Curso + Participante (mesma linha) */
 .row-50-50 {
   grid-template-columns: 1fr 1fr;
 }
 
-.row-40 {
-  grid-template-columns: 40% 1fr;
+/* Instrutor + Datas (mantém) */
+.row-instrutor-datas {
+  grid-template-columns: 40% 160px 160px;
+  gap: 14px;
+  align-items: end;
 }
 
-.row-30-30 {
-  grid-template-columns: 30% 30% 1fr;
+/* Descrição ocupando 80% */
+.row-descricao-80 {
+  grid-template-columns: 80%;
+  justify-content: start;
 }
 
 /* ==============================
-   FORM FIELDS (igual NovoCurso)
+   FORM FIELDS
 ============================== */
 .form-group {
   display: flex;
@@ -132,7 +149,46 @@
 }
 
 /* ==============================
-   ANEXOS (área clean igual tema)
+   AUTOCOMPLETE
+============================== */
+.autocomplete {
+  position: relative;
+}
+
+.autocomplete-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.08);
+
+  max-height: 220px;
+  overflow: auto;
+  z-index: 50;
+
+  padding: 6px;
+  margin: 0;
+  list-style: none;
+}
+
+.autocomplete-list li {
+  padding: 10px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.autocomplete-list li:hover {
+  background: rgba(63, 134, 168, 0.12);
+}
+
+/* ==============================
+   ANEXOS
 ============================== */
 .anexo-area {
   display: flex;
@@ -141,25 +197,24 @@
   flex-wrap: wrap;
 }
 
-.file-input {
-  display: none; /* você já usa o filePicker hidden */
-}
-
 .file-name {
   font-size: 13px;
   color: var(--muted);
 }
 
 /* ==============================
-   AÇÕES / BOTÕES (igual NovoCurso)
+   AÇÕES / BOTÕES
 ============================== */
 .actions {
   margin-top: 16px;
   padding-top: 14px;
   border-top: 1px solid var(--border);
+
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
 }
 
 .btn {
@@ -176,6 +231,13 @@
   transform: translateY(1px);
 }
 
+.actions .btn {
+  min-width: 120px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .btn.btn-primary {
   background: var(--primary);
   color: #fff;
@@ -185,7 +247,6 @@
   background: var(--primary-600);
 }
 
-/* seu botão "Limpar" é btn-secondary */
 .btn.btn-secondary {
   background: #6c757d;
   color: #fff;
@@ -193,6 +254,40 @@
 
 .btn.btn-secondary:hover {
   background: #8f979e;
+}
+
+/* Linha: Anexos + Botões (mesma linha) */
+.row-anexos-acoes {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 14px;
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.row-anexos-acoes .form-group {
+  flex: 1 1 auto;
+}
+
+.actions.actions-inline {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.actions.actions-inline .btn {
+  min-width: 120px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ==============================
@@ -203,14 +298,24 @@
     padding: 16px;
   }
 
+  /* ✅ no mobile: tira o deslocamento da esquerda */
+  .page-container {
+    margin-left: 0;
+    max-width: 100%;
+  }
+
   .row-50-50,
-  .row-40,
-  .row-30-30 {
+  .row-instrutor-datas,
+  .row-descricao-80 {
     grid-template-columns: 1fr;
   }
 
   .actions {
-    justify-content: flex-end;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+  }
+
+  .actions .btn {
+    min-width: 110px;
+    padding: 10px 12px;
   }
 }

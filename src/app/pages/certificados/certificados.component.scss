@@ -16,7 +16,7 @@
 }
 
 /* ==============================
-   PAGE (mantém estrutura do HTML)
+   PAGE
 ============================== */
 .page {
   padding: 22px 24px;
@@ -24,23 +24,22 @@
   min-height: calc(100vh - 56px);
 }
 
-.page > .actions {
+/* ✅ IGUAL CADASTRO DE CURSO:
+   Header, Actions e Panel com MESMA largura e MESMO alinhamento */
+.topbar,
+.page > .actions,
+.panel {
   width: 100%;
   max-width: 1100px;
-  margin: 0 auto 14px;     /* centraliza e dá espaço antes do panel */
-  display: flex;
-  justify-content: flex-end; /* joga pro canto direito */
-  align-items: center;
-  gap: 10px;
+  margin: 0 auto;
+  margin-left: 120px; /* ajuste esse valor para bater 100% com o Cadastro de Curso */
 }
 
 /* ==============================
-   TOPBAR (vira o "title-wrap")
+   TOPBAR
 ============================== */
 .topbar {
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto 14px;
+  margin-bottom: 14px;
 
   background: var(--header);
   padding: 16px 20px;
@@ -56,7 +55,7 @@
 .topbar .title h1 {
   margin: 0 0 4px;
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 500;
   color: #fff;
 }
 
@@ -67,21 +66,20 @@
   opacity: 0.9;
 }
 
-/* ações no header */
-.topbar .actions {
+/* ==============================
+   ACTIONS (botão + Novo Certificado)
+============================== */
+.page > .actions {
+  margin-bottom: 14px;
   display: flex;
-  gap: 10px;
+  justify-content: flex-end;
   align-items: center;
 }
 
 /* ==============================
-   PANEL (vira o "card")
+   PANEL
 ============================== */
 .panel {
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -90,7 +88,7 @@
 }
 
 /* ==============================
-   PANEL HEAD (como card-head)
+   PANEL HEAD
 ============================== */
 .panel-head {
   padding: 14px 16px;
@@ -103,13 +101,38 @@
   gap: 12px;
 }
 
-/* participante */
+/* participante: info à esquerda + search ocupando o resto */
 .participant {
+  display: grid;
+  grid-template-columns: 280px 1fr; /* 280 = largura do bloco do nome */
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* bloco avatar+nome (fixo) */
+.pinfo {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: 280px;
+  min-width: 0;
 }
+
+/* search agora ocupa a coluna 2 inteira */
+.search-participante {
+  margin-left: 0;        /* remove o empurrão */
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+
+/* NÃO deixe min-width fixo no .search geral */
+.search {
+  min-width: 0;          /* importante pra não sobrar espaço */
+  width: 100%;
+}
+
 
 .avatar {
   width: 44px;
@@ -137,7 +160,7 @@
   color: var(--muted);
 }
 
-/* tools (busca + exportar) */
+/* tools */
 .tools {
   display: flex;
   align-items: center;
@@ -145,7 +168,7 @@
 }
 
 /* ==============================
-   SEARCH (mesmo estilo de input do NovoCurso)
+   SEARCH
 ============================== */
 .search {
   display: flex;
@@ -179,7 +202,7 @@
 }
 
 /* ==============================
-   BUTTONS (mapear .btn.primary/.ghost/.outline para o tema)
+   BUTTONS
 ============================== */
 .btn {
   border: 1px solid transparent;
@@ -189,45 +212,34 @@
   font-weight: 700;
   cursor: pointer;
   transition: transform 0.02s ease, background 0.15s ease, border-color 0.15s ease;
+}
 
-  &:active {
-    transform: translateY(1px);
-  }
+.btn:active {
+  transform: translateY(1px);
 }
 
 .btn.primary {
   background: var(--primary);
   color: #fff;
-
-  &:hover {
-    background: var(--primary-600);
-  }
 }
 
-.btn.ghost {
-  color: #fff;
-  background-color: #6c757d;
-  border-color: rgba(255, 255, 255, 0.25);
-
-  &:hover {
-    background: #8f979e;
-  }
+.btn.primary:hover {
+  background: var(--primary-600);
 }
 
-/* Exportar */
 .btn.outline {
   background: #fff;
   color: var(--text);
   border-color: var(--border);
+}
 
-  &:hover {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 4px var(--focus);
-  }
+.btn.outline:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--focus);
 }
 
 /* ==============================
-   TABLE (deixa clean igual ao card do NovoCurso)
+   TABLE
 ============================== */
 .grid-wrap {
   padding: 16px;
@@ -269,7 +281,7 @@
   font-weight: 800;
 }
 
-/* status pill base (as cores finais dependem do statusClass) */
+/* status */
 .status {
   display: inline-flex;
   align-items: center;
@@ -282,7 +294,6 @@
   color: var(--text);
 }
 
-/* exemplos comuns (se seu statusClass retornar essas classes) */
 .status.valido,
 .status.ativo,
 .status.ok {
@@ -312,14 +323,16 @@
    RESPONSIVO
 ============================== */
 @media (max-width: 980px) {
+  /* ✅ no mobile, volta o alinhamento pra não cortar */
+  .topbar,
+  .page > .actions,
+  .panel {
+    margin-left: auto;
+  }
+
   .topbar {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .topbar .actions {
-    justify-content: flex-end;
-    flex-wrap: wrap;
   }
 
   .panel-head {
@@ -342,6 +355,6 @@
   }
 
   .grid {
-    min-width: 920px; /* mantém colunas */
+    min-width: 920px;
   }
 }
