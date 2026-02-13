@@ -237,6 +237,44 @@ app.get("/api/participantes/buscar", async (req, res) => {
   }
 });
 
+// GET /api/relatorios/participantes?nome=abc
+app.get("/api/relatorios/participantes", async (req, res) => {
+  try {
+    const nome = (req.query.nome ?? "").toString().trim();
+console.log("✅ ENTROU NA ROTA RELATORIO PARTICIPANTES", req.query);
+    let sql = `
+      SELECT
+        codigo,
+        nome_completo AS nomeCompleto,
+        cpf,
+        email,
+        igreja,
+        data_cadastro AS dataCadastro,
+        status,
+        telefone1,
+        telefone2,
+        observacoes
+      FROM participante
+    `;
+
+    const params = [];
+
+    if (nome.length > 0) {
+      sql += " WHERE nome_completo LIKE ? ";
+      params.push(`%${nome}%`);
+    }
+
+    sql += " ORDER BY nome_completo ASC"; // ✅ sem LIMIT
+
+    const [rows] = await pool.execute(sql, params);
+    return res.json(rows);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Erro ao listar relatório de participantes." });
+  }
+});
+
+
 
 
 // POST /api/lancamentos -> cria lançamento

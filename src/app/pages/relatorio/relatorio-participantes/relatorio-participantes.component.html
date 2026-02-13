@@ -1,0 +1,61 @@
+<div class="page-container">
+  <div class="page-header">
+    <h1>Relatório de Participantes</h1>
+    <p>Consulte e pesquise participantes pelo nome.</p>
+  </div>
+
+  <div class="card">
+    <div class="toolbar">
+      <div class="form-group">
+        <label>Pesquisar por nome</label>
+        <input type="text" [formControl]="form.controls.nome" placeholder="Digite o nome..." />
+      </div>
+
+      <button type="button" class="btn btn-secondary" (click)="limparBusca()">
+        Limpar
+      </button>
+    </div>
+
+    <div class="status" *ngIf="carregando">Carregando...</div>
+    <div class="status status-error" *ngIf="erro">{{ erro }}</div>
+
+    <div class="table-wrap" *ngIf="!carregando && !erro">
+      <table class="table">
+        <thead>
+          <tr>
+        
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Igreja</th>
+            <th>Status</th>
+            <th>Data Cadastro</th>
+            <th>Telefone 1</th>
+            <th>Telefone 2</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let p of participantes">
+        
+            <td>{{ p.nomeCompleto }}</td>
+            <td>{{ p.cpf || '-' }}</td>
+            <td>{{ p.igreja }}</td>
+            <td>
+              <span class="badge" [class.badge-inativo]="p.status === 'INATIVO'">
+                {{ p.status }}
+              </span>
+            </td>
+           <td>{{ p.dataCadastro | date:'dd/MM/yy':'UTC' }}</td>
+            <td>{{ p.telefone1 || '-' }}</td>
+            <td>{{ p.telefone2 || '-' }}</td>
+          </tr>
+
+          <tr *ngIf="participantes.length === 0">
+            <td colspan="8" class="empty">Nenhum participante encontrado.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+

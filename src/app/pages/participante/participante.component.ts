@@ -1,40 +1,41 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ParticipanteService, ParticipanteRequest } from '../../../core/participante.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-participante',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule,ReactiveFormsModule],
   templateUrl: './participante.component.html',
   styleUrl: './participante.component.scss',
 })
-export class ParticipanteComponent {
+export class ParticipanteComponent implements OnDestroy {
   form;
+
+  mostrarAlert = false;
+  private alertTimer: any;
 
   constructor(
     private fb: FormBuilder,
     private participanteService: ParticipanteService
-    
   ) {
-   this.form = this.fb.group({
-  nomeCompleto: ['', [Validators.required, Validators.maxLength(150)]],
-  cpf: ['', [Validators.maxLength(14)]], // sem required
-  email: ['', [Validators.email, Validators.maxLength(150)]], // sem required
+    this.form = this.fb.group({
+      nomeCompleto: ['', [Validators.required, Validators.maxLength(150)]],
+      cpf: ['', [Validators.maxLength(14)]],
+      email: ['', [Validators.email, Validators.maxLength(150)]],
 
-  dataCadastro: ['', Validators.required], // vamos auto-preencher com hoje
-  igreja: ['', [Validators.required, Validators.maxLength(150)]],
-  status: ['ATIVO', Validators.required],
+      dataCadastro: ['', Validators.required],
+      igreja: ['', [Validators.required, Validators.maxLength(150)]],
+      status: ['ATIVO', Validators.required],
 
-  observacoes: [''],
+      observacoes: [''],
+      telefone1: ['', [Validators.maxLength(20)]],
+      telefone2: ['', [Validators.maxLength(20)]],
+    });
 
-  telefone1: ['', [Validators.maxLength(20)]], // sem required
-  telefone2: ['', [Validators.maxLength(20)]],
-});
-
-const hoje = new Date().toISOString().slice(0, 10);
-this.form.patchValue({ dataCadastro: hoje });
-
+    const hoje = new Date().toISOString().slice(0, 10);
+    this.form.patchValue({ dataCadastro: hoje });
   }
 
   salvar() {
@@ -48,18 +49,41 @@ this.form.patchValue({ dataCadastro: hoje });
     this.participanteService.create(payload).subscribe({
       next: (res) => {
         console.log('Salvo!', res);
-        alert('Participante cadastrado com sucesso!');
+
+        this.mostrarAlertSucesso(); // ✅ aqui ativa o alert custom
         this.limpar();
       },
       error: (e) => {
         console.error(e);
-        alert(e.message ?? 'Erro ao salvar participante.');
+        // se quiser, depois a gente cria um alert de erro também
+        alert(e?.message ?? 'Erro ao salvar participante.');
       },
     });
   }
 
- limpar() {
-  const hoje = new Date().toISOString().slice(0, 10);
-  this.form.reset({ status: 'ATIVO', dataCadastro: hoje });
-}
+  private mostrarAlertSucesso() {
+    this.mostrarAlert = true;
+
+    // evita timers acumulados se salvar várias vezes
+    if (this.alertTimer) clearTimeout(this.alertTimer);
+
+    // some sozinho após 3s (opcional)
+    this.alertTimer = setTimeout(() => {
+      this.mostrarAlert = false;
+    }, 3000);
+  }
+
+  fecharAlert() {
+    this.mostrarAlert = false;
+    if (this.alertTimer) clearTimeout(this.alertTimer);
+  }
+
+  limpar() {
+    const hoje = new Date().toISOString().slice(0, 10);
+    this.form.reset({ status: 'ATIVO', dataCadastro: hoje });
+  }
+
+  ngOnDestroy(): void {
+    if (this.alertTimer) clearTimeout(this.alertTimer);
+  }
 }

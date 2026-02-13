@@ -29,6 +29,8 @@ export class LancamentosComponent {
   mostrarListaCursos = false;
   cursosFiltrados: CursoListItem[] = [];
   mostrarAlert = false;
+  private alertTimer: any;
+
   mostrarListaParticipantes = false;
   participantesFiltrados: ParticipanteListItem[] = [];
 
@@ -37,7 +39,8 @@ export class LancamentosComponent {
     private lancamentoService: LancamentoService,
     private cursoService: CursoService,
     private participanteService: ParticipanteService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    
 
   ) {
     this.form = this.fb.group({
@@ -177,7 +180,7 @@ fecharListaParticipantesComDelay() {
 
         this.lancamentoService.uploadAnexo(lancamentoCodigo, fd).subscribe({
           next: () => {
-            this.showSuccess('Lançamento salvo com sucesso!');
+            this.mostrarAlertSucesso(); // ✅ aqui
             this.limpar();
           },
           error: (err) => {
@@ -188,7 +191,7 @@ fecharListaParticipantesComDelay() {
       }
 
       // ✅ sem anexo
-      this.showSuccess('Lançamento salvo com sucesso!');
+      this.mostrarAlertSucesso(); // ✅ aqui
       this.limpar();
     },
     error: (err) => {
@@ -196,6 +199,7 @@ fecharListaParticipantesComDelay() {
     }
   });
 }
+
 
 
 private showSuccess(msg: string) {
@@ -212,6 +216,20 @@ private showError(msg: string) {
     horizontalPosition: 'right',
     verticalPosition: 'top',
   });
+}
+
+fecharAlert() {
+  this.mostrarAlert = false;
+  if (this.alertTimer) clearTimeout(this.alertTimer);
+}
+
+private mostrarAlertSucesso() {
+  this.mostrarAlert = true;
+
+  if (this.alertTimer) clearTimeout(this.alertTimer);
+  this.alertTimer = setTimeout(() => {
+    this.mostrarAlert = false;
+  }, 3000);
 }
 
 

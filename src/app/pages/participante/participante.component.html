@@ -12,6 +12,21 @@
       <div class="card-subtitle">Campos com * são obrigatórios</div>
     </div>
 
+    <!-- ✅ ALERT (somente ele fica dentro do *ngIf) -->
+    <div *ngIf="mostrarAlert" class="alert-cursos" role="alert">
+      <div><strong>Sucesso!</strong> Participante cadastrado com sucesso!</div>
+
+      <button
+        type="button"
+        class="alert-close"
+        (click)="fecharAlert()"
+        aria-label="Close"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- ✅ FORM FORA do *ngIf (sempre aparece) -->
     <form class="form" [formGroup]="form">
       <div class="grid">
         <!-- Linha 1 -->
@@ -21,7 +36,7 @@
         </div>
 
         <div class="form-group col-3">
-          <label>CPF </label>
+          <label>CPF</label>
           <input type="text" formControlName="cpf" placeholder="000.000.000-00" maxlength="20" />
         </div>
 
@@ -32,39 +47,39 @@
         </div>
 
         <div class="form-group col-3">
-          <label>Igreja</label>
+          <label>Igreja <span class="req">*</span></label>
           <input type="text" formControlName="igreja" maxlength="20" />
         </div>
-        
+
         <div class="col-12 divider"></div>
 
-      <!-- Linha 3: Data + Status + Telefones (tudo na mesma linha) -->
-<div class="col-12 inline-fields row-compact">
-  <div class="form-group date-sm">
-    <label>Data de cadastro <span class="req">*</span></label>
-    <input type="date" formControlName="dataCadastro" />
-  </div>
+        <!-- Linha 3 -->
+        <div class="col-12 inline-fields row-compact">
+          <div class="form-group date-sm">
+            <label>Data de cadastro <span class="req">*</span></label>
+            <input type="date" formControlName="dataCadastro" />
+          </div>
 
-  <div class="form-group status-sm">
-    <label>Status <span class="req">*</span></label>
-    <select formControlName="status">
-      <option value="ATIVO">Ativo</option>
-      <option value="INATIVO">Inativo</option>
-    </select>
-  </div>
+          <div class="form-group status-sm">
+            <label>Status <span class="req">*</span></label>
+            <select formControlName="status">
+              <option value="ATIVO">Ativo</option>
+              <option value="INATIVO">Inativo</option>
+            </select>
+          </div>
 
-  <div class="form-group phone-sm">
-    <label>Telefone 1</label>
-    <input type="text" formControlName="telefone1" placeholder="(00) 00000-0000" maxlength="20" />
-  </div>
+          <div class="form-group phone-sm">
+            <label>Telefone 1</label>
+            <input type="text" formControlName="telefone1" placeholder="(00) 00000-0000" maxlength="20" />
+          </div>
 
-  <div class="form-group phone-sm">
-    <label>Telefone 2</label>
-    <input type="text" formControlName="telefone2" placeholder="(00) 00000-0000" maxlength="20" />
-  </div>
-</div>
+          <div class="form-group phone-sm">
+            <label>Telefone 2</label>
+            <input type="text" formControlName="telefone2" placeholder="(00) 00000-0000" maxlength="20" />
+          </div>
+        </div>
 
-<div class="col-12 divider"></div>
+        <div class="col-12 divider"></div>
 
         <!-- Observações -->
         <div class="form-group col-8">

@@ -15,12 +15,25 @@ export interface ParticipanteBuscaResponse {
   nomeCompleto: string;
 }
 
+export interface ParticipanteRelatorioItem {
+  codigo: number;
+  nomeCompleto: string;
+  cpf?: string | null;
+  email?: string | null;
+  igreja: string;
+  dataCadastro: string; // YYYY-MM-DD
+  status: StatusParticipante;
+  telefone1?: string | null;
+  telefone2?: string | null;
+  observacoes?: string | null;
+}
+
 export interface ParticipanteRequest {
   nomeCompleto: string;
   cpf: string;
   email: string;
   igreja: string;
-  dataCadastro: string; // "YYYY-MM-DD" (input type="date" já manda assim)
+  dataCadastro: string; // "YYYY-MM-DD"
   status: StatusParticipante;
   telefone1: string;
   telefone2?: string | null;
@@ -37,14 +50,12 @@ export interface ParticipanteResponse {
 })
 export class ParticipanteService {
   private readonly baseUrl = 'http://localhost:3000/api/participantes';
+  private readonly relatorioUrl = 'http://localhost:3000/api/relatorios/participantes';
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Salva um participante no banco (POST /api/participantes)
-   */
+  /** POST /api/participantes */
   create(payload: ParticipanteRequest): Observable<ParticipanteResponse> {
-    // pequena normalização (evita salvar "" no banco)
     const body: ParticipanteRequest = {
       ...payload,
       cpf: payload.cpf?.trim(),
@@ -61,9 +72,31 @@ export class ParticipanteService {
     );
   }
 
+  /** GET /api/participantes?q= */
+  listar(q: string): Observable<ParticipanteListItem[]> {
+    return this.http.get<ParticipanteListItem[]>(
+      `${this.baseUrl}?q=${encodeURIComponent(q)}`
+    );
+  }
+
+  /** GET /api/participantes/buscar?nome= */
+  buscarPorNome(nome: string): Observable<ParticipanteBuscaResponse> {
+    return this.http.get<ParticipanteBuscaResponse>(
+      `${this.baseUrl}/buscar`,
+      { params: { nome } }
+    );
+  }
+
+  /** ✅ GET /api/relatorios/participantes?nome=  (sem LIMIT) */
+  listarRelatorio(nome: string): Observable<ParticipanteRelatorioItem[]> {
+    return this.http.get<ParticipanteRelatorioItem[]>(
+      this.relatorioUrl,
+      { params: { nome } }
+    );
+  }
+
   private handleError(err: unknown) {
     if (err instanceof HttpErrorResponse) {
-      // Aqui você pode adaptar pro formato que sua API devolve (message, errors, etc.)
       const apiMsg =
         (err.error && (err.error.message || err.error.mensagem)) ||
         'Erro ao salvar participante.';
@@ -73,16 +106,4 @@ export class ParticipanteService {
 
     return throwError(() => new Error('Erro inesperado.'));
   }
-
-  listar(q: string): Observable<ParticipanteListItem[]> {
-  return this.http.get<ParticipanteListItem[]>(`${this.baseUrl}?q=${encodeURIComponent(q)}`);
-}
-
-buscarPorNome(nome: string): Observable<ParticipanteBuscaResponse> {
-  return this.http.get<ParticipanteBuscaResponse>(
-    `${this.baseUrl}/buscar`,
-    { params: { nome } }
-  );
-}
-
 }

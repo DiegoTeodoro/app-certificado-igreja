@@ -213,6 +213,46 @@
   background: #8f979e;
 }
 
+.alert-cursos{
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+
+  min-width: 420px;
+  max-width: 600px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #d1e7dd;
+  border: 1px solid #badbcc;
+  color: #0f5132;
+  padding: 12px 14px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.12);
+}
+
+.alert-close{
+  border: 0;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 8px;
+  color: inherit;
+}
+.field-error{
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #b91c1c;
+}
+
+
 /* ==============================
    RESPONSIVO
 ============================== */

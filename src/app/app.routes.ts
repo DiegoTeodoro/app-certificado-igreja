@@ -7,4 +7,7 @@ export const routes: Routes = [
   { path: 'participante', loadComponent: () => import('./pages/participante/participante.component').then(m => m.ParticipanteComponent) },
   { path: 'certificados', loadComponent: () => import('./pages/certificados/certificados.component').then(m => m.CertificadosComponent) },
   { path: 'lancamentos', loadComponent: () => import('./pages/lancamentos/lancamentos.component').then(m => m.LancamentosComponent) },
+ { path: 'relatorio-participantes', loadComponent: () => import('./pages/relatorio/relatorio-participantes/relatorio-participantes.component').then(m => m.RelatorioParticipantesComponent) },
+
+
 ];

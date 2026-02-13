@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CursoService, CursoCreateDTO } from '../../../core/curso.service';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -14,7 +15,7 @@ type CursoForm = {
 @Component({
   selector: 'app-novo-curso',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule,ReactiveFormsModule],
   templateUrl: './novo-curso.component.html',
   styleUrl: './novo-curso.component.scss',
 })
@@ -37,6 +38,25 @@ export class NovoCursoComponent {
   });
 }
 
+mostrarAlert = false;
+private alertTimer?: ReturnType<typeof setTimeout>;
+
+mostrarSucesso() {
+  this.mostrarAlert = true;
+
+  if (this.alertTimer) clearTimeout(this.alertTimer);
+
+  this.alertTimer = setTimeout(() => {
+    this.mostrarAlert = false;
+  }, 3000); // 3s
+}
+
+fecharAlert() {
+  this.mostrarAlert = false;
+  if (this.alertTimer) clearTimeout(this.alertTimer);
+}
+
+
   salvar() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -46,15 +66,17 @@ export class NovoCursoComponent {
     // getRawValue() retorna o objeto completo e tipado (sem Partial)
     const dto: CursoCreateDTO = this.form.getRawValue();
 
-    this.cursoService.criar(dto).subscribe({
-      next: (res) => {
-        console.log('Salvo!', res);
-        this.limpar();
-      },
-      error: (err) => {
-        console.error('Erro ao salvar', err);
-      },
-    });
+   this.cursoService.criar(dto).subscribe({
+  next: (res) => {
+    console.log('Salvo!', res);
+    this.mostrarSucesso();  // ✅ aqui
+    this.limpar();
+  },
+  error: (err) => {
+    console.error('Erro ao salvar', err);
+  },
+});
+
   }
 
   limpar() {
@@ -62,8 +84,8 @@ export class NovoCursoComponent {
       nomeCurso: '',
       dataCadastro: this.hojeISO(),
       descricao: '',
-      cargaHoraria: 0,
-      validadeCertificado: 0
+      cargaHoraria: 1,
+      validadeCertificado: 1
     });
   }
 }
