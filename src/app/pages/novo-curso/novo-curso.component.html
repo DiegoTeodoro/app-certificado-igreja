@@ -3,7 +3,8 @@
   <header class="content-header">
     <div class="title-wrap">
 
-      <h1>Cadastro de Curso</h1>
+      <h1>{{ cursoId ? 'Editar Curso' : 'Cadastro de Curso' }}</h1>
+
       <p>Preencha os dados do curso para cadastrar no sistema.</p>
     </div>
     
@@ -18,15 +19,19 @@
       <div class="card-subtitle">Campos com * são obrigatórios</div>
     </div>
 
-   <div *ngIf="mostrarAlert" class="alert-cursos" role="alert">
-  <div><strong>Sucesso!</strong> Curso salvo com sucesso!</div>
-
-  <button type="button" class="alert-close" (click)="fecharAlert()" aria-label="Close">
-    ✕
-  </button>
+ <div *ngIf="mostrarAlert" class="alert-cursos" role="alert">
+  <div><strong>Sucesso!</strong> {{ mensagemSucesso }}</div>
+  <button type="button" class="alert-close" (click)="fecharAlert()" aria-label="Close">✕</button>
 </div>
 
-
+<div *ngIf="mostrarErro" class="alert-cursos erro" role="alert">
+  <div><strong>Atenção!</strong> {{ mensagemErro }}</div>
+  <button
+    type="button"
+    class="alert-close"
+    (click)="mostrarErro = false"
+    aria-label="Close">✕</button>
+</div>
 
     <form class="form" [formGroup]="form">
       <div class="grid">

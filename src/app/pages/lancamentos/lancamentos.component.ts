@@ -21,6 +21,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class LancamentosComponent {
   form;
 
+  mostrarErro = false;
+  mensagemErro = '';
+
   arquivoSelecionado: File | null = null;
   arquivosSelecionados: File[] = [];
   mensagemSucesso = false;
@@ -149,16 +152,28 @@ fecharListaParticipantesComDelay() {
   }
 
  salvar() {
-  if (this.form.invalid) {
-    this.form.markAllAsTouched();
-    return;
-  }
+ if (this.form.invalid) {
+  this.form.markAllAsTouched();
+
+  this.mensagemErro = 'Preencha todos os campos obrigatórios.';
+  this.mostrarErroAlert();
+  return;
+}
 
   const cursoId = this.form.value.cursoId;
   const participanteCodigo = this.form.value.participanteCodigo;
 
-  if (!cursoId) { this.showError('Selecione um curso da lista.'); return; }
-  if (!participanteCodigo) { this.showError('Selecione um participante da lista.'); return; }
+  if (!cursoId) {
+  this.mensagemErro = 'Selecione um curso da lista.';
+  this.mostrarErroAlert();
+  return;
+}
+
+if (!participanteCodigo) {
+  this.mensagemErro = 'Selecione um participante da lista.';
+  this.mostrarErroAlert();
+  return;
+}
 
   const payload: LancamentoCreateRequest = {
     curso_id: Number(cursoId),
@@ -250,4 +265,14 @@ private mostrarAlertSucesso() {
     const input = event.target as HTMLInputElement;
     this.arquivosSelecionados = Array.from(input.files ?? []);
   }
+
+  private mostrarErroAlert() {
+  this.mostrarErro = true;
+
+  if (this.alertTimer) clearTimeout(this.alertTimer);
+
+  this.alertTimer = setTimeout(() => {
+    this.mostrarErro = false;
+  }, 3000);
+}
 }

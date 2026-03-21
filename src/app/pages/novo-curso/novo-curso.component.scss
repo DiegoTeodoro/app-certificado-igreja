@@ -294,3 +294,12 @@
     width: 100%;
   }
 }
+.alert-cursos.erro{
+  background: #f1aeb5;
+  color: #58151c;
+  border: 1px solid #58151c;
+}
+
+.alert-cursos.erro .alert-close{
+  color: #58151c;
+}

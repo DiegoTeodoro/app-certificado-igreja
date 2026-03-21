@@ -25,6 +25,18 @@
         ✕
       </button>
     </div>
+    <!-- ❌ ALERT ERRO -->
+<div *ngIf="mostrarErro" class="alert-cursos erro" role="alert">
+  <div><strong>Atenção!</strong> {{ mensagemErro }}</div>
+
+  <button
+    type="button"
+    class="alert-close"
+    (click)="mostrarErro = false"
+  >
+    ✕
+  </button>
+</div>
 
     <!-- ✅ FORM FORA do *ngIf (sempre aparece) -->
     <form class="form" [formGroup]="form">

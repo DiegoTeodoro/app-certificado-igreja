@@ -14,6 +14,19 @@
   </button>
 </div>
 
+<div *ngIf="mostrarErro" class="alert-cursos erro" role="alert">
+  <div><strong>Atenção!</strong> {{ mensagemErro }}</div>
+
+  <button
+    type="button"
+    class="alert-close"
+    (click)="mostrarErro = false"
+    aria-label="Close"
+  >
+    ✕
+  </button>
+</div>
+
   <div class="card">
     <form [formGroup]="form">
 

@@ -25,4 +25,11 @@ listarPorParticipante(participanteCodigo: number): Observable<CertificadoDto[]> 
       { params: { participante_codigo: participanteCodigo } }
     );
   }
+
+  listarRelatorioVencimento(q?: string) {
+  return this.http.get<any[]>(
+    `${this.baseUrl}/api/relatorios/certificados-vencimento`,
+    { params: q ? { q } : {} }
+  );
+}
 }

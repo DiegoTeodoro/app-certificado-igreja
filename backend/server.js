@@ -102,6 +102,117 @@ app.get("/api/cursos", async (req, res) => {
   }
 });
 
+// GET /api/cursos/relatorio?q=
+app.get("/api/cursos/relatorio", async (req, res) => {
+  try {
+    const q = (req.query.q ?? "").toString().trim();
+
+    let sql = `
+      SELECT
+        id,
+        nome_curso AS nomeCurso,
+        data_cadastro AS dataCadastro,
+        carga_horaria AS cargaHoraria,
+        validade_meses AS validadeCertificado,
+        descricao
+      FROM curso
+    `;
+    const params = [];
+
+    if (q.length > 0) {
+      sql += " WHERE nome_curso LIKE ? ";
+      params.push(`%${q}%`);
+    }
+
+    sql += " ORDER BY nome_curso ASC"; // sem LIMIT
+
+    const [rows] = await pool.execute(sql, params);
+    return res.json(rows);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Erro ao listar cursos." });
+  }
+});
+
+// GET /api/cursos/:id
+app.get("/api/cursos/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    const sql = `
+      SELECT
+        id,
+        nome_curso AS nomeCurso,
+        data_cadastro AS dataCadastro,
+        carga_horaria AS cargaHoraria,
+        validade_meses AS validadeCertificado,
+        descricao
+      FROM curso
+      WHERE id = ?
+    `;
+
+    const [rows] = await pool.execute(sql, [id]);
+
+    if (rows.length === 0) return res.status(404).json({ message: "Curso não encontrado." });
+
+    return res.json(rows[0]);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Erro ao buscar curso." });
+  }
+});
+
+// PUT /api/cursos/:id
+app.put("/api/cursos/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const { nomeCurso, dataCadastro, cargaHoraria, validadeCertificado, descricao } = req.body;
+
+    if (!nomeCurso || !dataCadastro || !cargaHoraria || !validadeCertificado) {
+      return res.status(400).json({ message: "Campos obrigatórios faltando." });
+    }
+
+    const sql = `
+      UPDATE curso
+      SET nome_curso = ?, data_cadastro = ?, carga_horaria = ?, validade_meses = ?, descricao = ?
+      WHERE id = ?
+    `;
+
+    const [result] = await pool.execute(sql, [
+      nomeCurso,
+      dataCadastro,
+      Number(cargaHoraria),
+      Number(validadeCertificado),
+      descricao ?? null,
+      id
+    ]);
+
+    if (result.affectedRows === 0) return res.status(404).json({ message: "Curso não encontrado." });
+
+    return res.json({ message: "Curso atualizado com sucesso!" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Erro ao atualizar curso." });
+  }
+});
+
+// DELETE /api/cursos/:id
+app.delete("/api/cursos/:id", async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    const [result] = await pool.execute("DELETE FROM curso WHERE id = ?", [id]);
+
+    if (result.affectedRows === 0) return res.status(404).json({ message: "Curso não encontrado." });
+
+    return res.json({ message: "Curso removido com sucesso!" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Erro ao deletar curso." });
+  }
+});
+
+
 
 // POST /api/participantes -> cria participante
 app.post("/api/participantes", async (req, res) => {
@@ -451,6 +562,43 @@ app.get("/api/certificados", async (req, res) => {
   }
 });
 
+// GET /api/relatorios/certificados-vencimento?q=
+app.get("/api/relatorios/certificados-vencimento", async (req, res) => {
+  try {
+    const q = (req.query.q ?? "").toString().trim();
 
+    let sql = `
+      SELECT
+        p.nome_completo AS participanteNome,
+        c.nome_curso    AS curso,
+        DATE(l.data_vencimento) AS dataVencimento,
+        CASE
+          WHEN DATE(l.data_vencimento) < CURDATE() THEN 'Vencido'
+          ELSE 'A vencer'
+        END AS status
+      FROM lancamento l
+      INNER JOIN participante p ON p.codigo = l.participante_codigo
+      INNER JOIN curso c ON c.id = l.curso_id
+     `;
+
+    const params = [];
+
+    if (q.length > 0) {
+      sql += ` AND (p.nome_completo LIKE ? OR c.nome_curso LIKE ?) `;
+      params.push(`%${q}%`, `%${q}%`);
+    }
+
+    sql += ` ORDER BY DATE(l.data_vencimento) ASC, p.nome_completo ASC`;
+
+    const [rows] = await pool.execute(sql, params);
+    return res.json(rows);
+  } catch (err) {
+    console.error("ERRO RELATORIO CERTIFICADOS:", err);
+    return res.status(500).json({
+      message: "Erro ao listar relatório de certificados.",
+      detail: err?.message ?? String(err),
+    });
+  }
+});
 
 app.listen(3000, () => console.log("API rodando em http://localhost:3000"));

@@ -15,6 +15,8 @@ export class ParticipanteComponent implements OnDestroy {
 
   mostrarAlert = false;
   private alertTimer: any;
+  mostrarErro = false;
+  mensagemErro = '';
 
   constructor(
     private fb: FormBuilder,
@@ -39,28 +41,38 @@ export class ParticipanteComponent implements OnDestroy {
   }
 
   salvar() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
 
-    const payload = this.form.value as ParticipanteRequest;
+    this.mensagemErro = 'Preencha todos os campos obrigatórios.';
+    this.mostrarErroAlert();
 
-    this.participanteService.create(payload).subscribe({
-      next: (res) => {
-        console.log('Salvo!', res);
-
-        this.mostrarAlertSucesso(); // ✅ aqui ativa o alert custom
-        this.limpar();
-      },
-      error: (e) => {
-        console.error(e);
-        // se quiser, depois a gente cria um alert de erro também
-        alert(e?.message ?? 'Erro ao salvar participante.');
-      },
-    });
+    return;
   }
 
+  const payload = this.form.value as ParticipanteRequest;
+
+  this.participanteService.create(payload).subscribe({
+    next: (res) => {
+      this.mostrarAlertSucesso();
+      this.limpar();
+    },
+    error: (e) => {
+      this.mensagemErro = 'Erro ao salvar participante.';
+      this.mostrarErroAlert();
+    },
+  });
+}
+
+private mostrarErroAlert() {
+  this.mostrarErro = true;
+
+  if (this.alertTimer) clearTimeout(this.alertTimer);
+
+  this.alertTimer = setTimeout(() => {
+    this.mostrarErro = false;
+  }, 3000);
+}
   private mostrarAlertSucesso() {
     this.mostrarAlert = true;
 

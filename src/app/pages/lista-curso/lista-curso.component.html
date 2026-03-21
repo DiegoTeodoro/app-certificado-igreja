@@ -1,0 +1,56 @@
+<section class="content">
+  <header class="content-header">
+    <div class="title-wrap">
+      <h1>Cursos</h1>
+      <p>Consulte os cursos cadastrados.</p>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="toolbar">
+      <div class="form-group">
+        <label>Pesquisar por nome</label>
+        <input type="text" [formControl]="form.controls.q" placeholder="Digite o nome do curso..." />
+      </div>
+
+      <div class="toolbar-actions">
+        <button type="button" class="btn btn-secondary" (click)="limparBusca()">Limpar</button>
+        <button type="button" class="btn btn-primary" (click)="novoCurso()">Novo Curso</button>
+      </div>
+    </div>
+
+    <div class="status" *ngIf="carregando">Carregando...</div>
+    <div class="status status-error" *ngIf="erro">{{ erro }}</div>
+
+    <div class="table-wrap" *ngIf="!carregando && !erro">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Data Cadastro</th>
+            <th>Carga</th>
+            <th>Validade</th>
+            <th style="width: 160px;">Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let c of cursos; let i = index" [class.row-alt]="i % 2 === 1">
+            <td>{{ c.nomeCurso }}</td>
+            <td>{{ c.dataCadastro | date:'dd/MM/yy':'UTC' }}</td>
+            <td>{{ c.cargaHoraria }}</td>
+            <td>{{ c.validadeCertificado }}</td>
+            <td class="acoes">
+              <button type="button" class="btn btn-mini btn-ghost" (click)="editar(c.id)">Editar</button>
+              <button type="button" class="btn btn-mini btn-danger" (click)="deletar(c.id)">Deletar</button>
+            </td>
+          </tr>
+
+          <tr *ngIf="cursos.length === 0">
+            <td colspan="5" class="empty">Nenhum curso encontrado.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

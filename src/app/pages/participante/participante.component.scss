@@ -208,8 +208,8 @@
 }
 
 .alert-cursos{
-  position: fixed;
-  top: 20px;
+ position: fixed;
+  top: 120px; /* ou 120px / 150px */
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
@@ -256,4 +256,10 @@
   height: 1px;
   background: var(--border);
   margin: 6px 0 10px;
+}
+
+.alert-cursos.erro{
+  background: #f1aeb5;
+  color: #58151c;
+  border: 1px solid #58151c;
 }

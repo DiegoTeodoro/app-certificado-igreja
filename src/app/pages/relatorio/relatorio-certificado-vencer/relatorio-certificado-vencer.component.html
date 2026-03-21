@@ -1,0 +1,64 @@
+<div class="page">
+
+  <header class="topbar">
+    <div class="title">
+      <h1>Relatório - Certificados a vencer</h1>
+      <p class="subtitle">Lista de certificados com vencimento próximo / vencidos</p>
+    </div>
+  </header>
+
+  <section class="panel">
+
+    <div class="panel-head">
+      <div class="filters">
+        <div class="left">
+          <div class="badge">
+            <div class="icon">📄</div>
+            <div>
+              <div class="name">Relatório</div>
+              <div class="hint">Todos os participantes</div>
+            </div>
+          </div>
+        </div>
+
+        </div>
+      </div>
+   
+
+    <div class="grid-wrap">
+      <table class="grid" role="table">
+        <thead>
+          <tr>
+            <th class="col-part">Nome do participante</th>
+            <th class="col-curso">Curso</th>
+            <th class="col-data">Data de vencimento</th>
+            <th class="col-status">Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let r of relatorioFiltrado">
+            <td class="col-part"><div class="pname">{{ r.participanteNome }}</div></td>
+            <td class="col-curso"><div class="curso-text">{{ r.curso }}</div></td>
+            <td class="col-data">{{ r.dataVencimento | date:'dd/MM/yyyy' }}</td>
+            <td class="col-status">
+              <span class="status" [class]="statusClass(r.status)">{{ r.status }}</span>
+            </td>
+          </tr>
+
+          <tr *ngIf="relatorioFiltrado.length === 0">
+            <td class="empty" colspan="4">
+              Nenhum certificado encontrado para o filtro atual.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="panel-foot">
+      <div>Total no relatório: {{ relatorioFiltrado.length }}</div>
+    </footer>
+
+  </section>
+
+</div>
