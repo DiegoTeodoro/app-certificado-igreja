@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ParticipanteRelatorioItem } from './participante.service';
 
 export interface LancamentoCreateRequest {
   curso_id: number;
@@ -53,4 +54,6 @@ export class LancamentoService {
   atualizar(codigo: number, payload: Partial<LancamentoCreateRequest>): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/${codigo}`, payload);
   }
+
+ 
 }

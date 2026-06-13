@@ -1,1 +1,121 @@
-<p>relatorio-participantes works!</p>
+<div class="page">
+  <header class="topbar">
+    <div class="title">
+      <h1>Relatório - Participantes</h1>
+      <p class="subtitle">Lista de participantes cadastrados</p>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="toolbar" [formGroup]="form">
+      <div class="form-group">
+        <label>Igreja</label>
+        <input
+          type="text"
+          formControlName="igreja"
+          placeholder="Digite a igreja..."
+          (keyup.enter)="carregarRelatorio()"
+        />
+      </div>
+
+      <div class="form-group status-filter">
+        <label>Status</label>
+        <select formControlName="status">
+          <option value="">Todos</option>
+          <option value="ATIVO">Ativo</option>
+          <option value="INATIVO">Inativo</option>
+        </select>
+      </div>
+
+      <button type="button" class="btn btn-primary" (click)="carregarRelatorio()">
+        Filtrar
+      </button>
+
+      <button type="button" class="btn btn-ghost" (click)="limpar()">
+        Limpar
+      </button>
+
+      <div class="dropdown">
+        <button type="button" class="btn btn-print" (click)="alternarMenuImprimir()">
+          Imprimir
+        </button>
+
+        <div class="dropdown-menu" *ngIf="menuImprimirAberto">
+          <button type="button" (click)="imprimirPdf()">PDF</button>
+          <button type="button" (click)="exportarExcel()">Exportar Excel</button>
+        </div>
+      </div>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>CPF</th>
+          <th>E-mail</th>
+          <th>Igreja</th>
+          <th>Data Cadastro</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let participante of participantesPaginados">
+          <td>{{ participante.nomeCompleto }}</td>
+          <td>{{ participante.cpf }}</td>
+          <td>{{ participante.email }}</td>
+          <td>{{ participante.igreja }}</td>
+          <td>{{ participante.dataCadastro | date: 'dd/MM/yyyy' }}</td>
+          <td>
+            <span class="status" [ngClass]="statusClass(participante.status)">
+              {{ participante.status }}
+            </span>
+          </td>
+        </tr>
+
+       <tr *ngIf="participantesPaginados.length === 0">
+          <td colspan="6" class="empty">
+            Nenhum participante encontrado.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <footer class="panel-foot">
+  <div>
+    Total no relatório: {{ totalRegistros }}
+  </div>
+
+  <div class="pagination">
+    <label>Itens por página</label>
+
+    <select [(ngModel)]="itensPorPagina" (change)="alterarItensPorPagina()">
+      <option *ngFor="let opcao of opcoesPaginacao" [value]="opcao">
+        {{ opcao }}
+      </option>
+    </select>
+
+    <button
+      type="button"
+      class="page-btn"
+      (click)="paginaAnterior()"
+      [disabled]="paginaAtual === 1"
+    >
+      Anterior
+    </button>
+
+    <span>
+      Página {{ paginaAtual }} de {{ totalPaginas }}
+    </span>
+
+    <button
+      type="button"
+      class="page-btn"
+      (click)="proximaPagina()"
+      [disabled]="paginaAtual === totalPaginas"
+    >
+      Próxima
+    </button>
+  </div>
+</footer>
+  </div>
+</div>

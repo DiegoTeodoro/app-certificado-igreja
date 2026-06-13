@@ -124,5 +124,21 @@ export class ParticipanteService {
   ).pipe(
     catchError((err) => this.handleError(err))
   );
+
+  
+}
+ listarRelatorioParticipantes(
+  igreja: string,
+  status: string
+): Observable<ParticipanteRelatorioItem[]> {
+  return this.http.get<ParticipanteRelatorioItem[]>(
+    this.relatorioUrl,
+    {
+      params: {
+        igreja,
+        status
+      }
+    }
+  );
 }
 }

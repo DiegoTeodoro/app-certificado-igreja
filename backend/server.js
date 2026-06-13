@@ -3,13 +3,12 @@ const cors = require("cors");
 const mysql = require("mysql2/promise");
 
 const app = express();
-app.use(cors());          // libera acesso do Angular
+app.use(cors()); // libera acesso do Angular
 app.use(express.json());
 
 const path = require("path");
 const fs = require("fs");
-const multer = require("multer");// lê JSON do body
-
+const multer = require("multer"); // lê JSON do body
 
 // Pool de conexões (melhor que createConnection)
 const pool = mysql.createPool({
@@ -44,14 +43,22 @@ const upload = multer({
 app.post("/api/cursos", async (req, res) => {
   console.log("POST /api/cursos body =", req.body);
   try {
-    const { nomeCurso, dataCadastro, cargaHoraria, validadeCertificado, descricao } = req.body;
+    const {
+      nomeCurso,
+      dataCadastro,
+      cargaHoraria,
+      validadeCertificado,
+      descricao,
+    } = req.body;
 
     // validações básicas
     if (!nomeCurso || !dataCadastro || !cargaHoraria || !validadeCertificado) {
       return res.status(400).json({ message: "Campos obrigatórios faltando." });
     }
     if (Number(cargaHoraria) <= 0 || Number(validadeCertificado) <= 0) {
-      return res.status(400).json({ message: "cargaHoraria e validadeCertificado devem ser > 0." });
+      return res
+        .status(400)
+        .json({ message: "cargaHoraria e validadeCertificado devem ser > 0." });
     }
 
     const sql = `
@@ -77,7 +84,6 @@ app.post("/api/cursos", async (req, res) => {
     return res.status(500).json({ message: "Erro interno ao salvar curso." });
   }
 });
-
 
 // GET /api/cursos?q=abc -> lista cursos (filtra por nome)
 app.get("/api/cursos", async (req, res) => {
@@ -153,7 +159,8 @@ app.get("/api/cursos/:id", async (req, res) => {
 
     const [rows] = await pool.execute(sql, [id]);
 
-    if (rows.length === 0) return res.status(404).json({ message: "Curso não encontrado." });
+    if (rows.length === 0)
+      return res.status(404).json({ message: "Curso não encontrado." });
 
     return res.json(rows[0]);
   } catch (err) {
@@ -166,7 +173,13 @@ app.get("/api/cursos/:id", async (req, res) => {
 app.put("/api/cursos/:id", async (req, res) => {
   try {
     const id = Number(req.params.id);
-    const { nomeCurso, dataCadastro, cargaHoraria, validadeCertificado, descricao } = req.body;
+    const {
+      nomeCurso,
+      dataCadastro,
+      cargaHoraria,
+      validadeCertificado,
+      descricao,
+    } = req.body;
 
     if (!nomeCurso || !dataCadastro || !cargaHoraria || !validadeCertificado) {
       return res.status(400).json({ message: "Campos obrigatórios faltando." });
@@ -184,10 +197,11 @@ app.put("/api/cursos/:id", async (req, res) => {
       Number(cargaHoraria),
       Number(validadeCertificado),
       descricao ?? null,
-      id
+      id,
     ]);
 
-    if (result.affectedRows === 0) return res.status(404).json({ message: "Curso não encontrado." });
+    if (result.affectedRows === 0)
+      return res.status(404).json({ message: "Curso não encontrado." });
 
     return res.json({ message: "Curso atualizado com sucesso!" });
   } catch (err) {
@@ -203,7 +217,8 @@ app.delete("/api/cursos/:id", async (req, res) => {
 
     const [result] = await pool.execute("DELETE FROM curso WHERE id = ?", [id]);
 
-    if (result.affectedRows === 0) return res.status(404).json({ message: "Curso não encontrado." });
+    if (result.affectedRows === 0)
+      return res.status(404).json({ message: "Curso não encontrado." });
 
     return res.json({ message: "Curso removido com sucesso!" });
   } catch (err) {
@@ -211,8 +226,6 @@ app.delete("/api/cursos/:id", async (req, res) => {
     return res.status(500).json({ message: "Erro ao deletar curso." });
   }
 });
-
-
 
 // POST /api/participantes -> cria participante
 app.post("/api/participantes", async (req, res) => {
@@ -233,11 +246,15 @@ app.post("/api/participantes", async (req, res) => {
 
     // ✅ Só os obrigatórios
     if (!nomeCompleto || !igreja || !dataCadastro || !status) {
-      return res.status(400).json({ message: "Campos obrigatórios não preenchidos." });
+      return res
+        .status(400)
+        .json({ message: "Campos obrigatórios não preenchidos." });
     }
 
     if (!["ATIVO", "INATIVO"].includes(status)) {
-      return res.status(400).json({ message: "Status inválido. Use ATIVO ou INATIVO." });
+      return res
+        .status(400)
+        .json({ message: "Status inválido. Use ATIVO ou INATIVO." });
     }
 
     // ✅ CPF opcional (se vier, valida e impede duplicado)
@@ -248,13 +265,18 @@ app.post("/api/participantes", async (req, res) => {
         return res.status(400).json({ message: "CPF inválido." });
       }
 
-      const [cpfExistente] = await pool.execute(
-        "SELECT codigo FROM participante WHERE cpf = ?",
-        [cpfNormalizado]
-      );
+      const [
+        cpfExistente,
+      ] = await pool.execute("SELECT codigo FROM participante WHERE cpf = ?", [
+        cpfNormalizado,
+      ]);
 
       if (cpfExistente.length > 0) {
-        return res.status(409).json({ message: "Já existe um participante cadastrado com este CPF." });
+        return res
+          .status(409)
+          .json({
+            message: "Já existe um participante cadastrado com este CPF.",
+          });
       }
     }
 
@@ -286,7 +308,9 @@ app.post("/api/participantes", async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "Erro interno ao salvar participante." });
+    return res
+      .status(500)
+      .json({ message: "Erro interno ao salvar participante." });
   }
 });
 
@@ -325,7 +349,8 @@ app.get("/api/participantes", async (req, res) => {
 app.get("/api/participantes/buscar", async (req, res) => {
   try {
     const nome = (req.query.nome ?? "").toString().trim();
-    if (nome.length < 2) return res.status(400).json({ message: "Informe pelo menos 2 letras." });
+    if (nome.length < 2)
+      return res.status(400).json({ message: "Informe pelo menos 2 letras." });
 
     const sql = `
       SELECT codigo, nome_completo AS nomeCompleto
@@ -348,46 +373,6 @@ app.get("/api/participantes/buscar", async (req, res) => {
   }
 });
 
-// GET /api/relatorios/participantes?nome=abc
-app.get("/api/relatorios/participantes", async (req, res) => {
-  try {
-    const nome = (req.query.nome ?? "").toString().trim();
-console.log("✅ ENTROU NA ROTA RELATORIO PARTICIPANTES", req.query);
-    let sql = `
-      SELECT
-        codigo,
-        nome_completo AS nomeCompleto,
-        cpf,
-        email,
-        igreja,
-        data_cadastro AS dataCadastro,
-        status,
-        telefone1,
-        telefone2,
-        observacoes
-      FROM participante
-    `;
-
-    const params = [];
-
-    if (nome.length > 0) {
-      sql += " WHERE nome_completo LIKE ? ";
-      params.push(`%${nome}%`);
-    }
-
-    sql += " ORDER BY nome_completo ASC"; // ✅ sem LIMIT
-
-    const [rows] = await pool.execute(sql, params);
-    return res.json(rows);
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: "Erro ao listar relatório de participantes." });
-  }
-});
-
-
-
-
 // POST /api/lancamentos -> cria lançamento
 app.post("/api/lancamentos", async (req, res) => {
   console.log("POST /api/lancamentos body =", req.body);
@@ -399,37 +384,43 @@ app.post("/api/lancamentos", async (req, res) => {
       instrutor,
       data_realizacao,
       data_vencimento,
-      descricao
+      descricao,
     } = req.body;
 
     // ✅ Validações básicas
-    if (!curso_id || !participante_codigo || !instrutor || !data_realizacao || !data_vencimento) {
+    if (
+      !curso_id ||
+      !participante_codigo ||
+      !instrutor ||
+      !data_realizacao ||
+      !data_vencimento
+    ) {
       return res.status(400).json({
-        message: "Campos obrigatórios não preenchidos."
+        message: "Campos obrigatórios não preenchidos.",
       });
     }
 
     // ✅ Verifica se curso existe
-    const [cursoExiste] = await pool.execute(
-      "SELECT id FROM curso WHERE id = ?",
-      [curso_id]
-    );
+    const [
+      cursoExiste,
+    ] = await pool.execute("SELECT id FROM curso WHERE id = ?", [curso_id]);
 
     if (cursoExiste.length === 0) {
       return res.status(404).json({
-        message: "Curso não encontrado."
+        message: "Curso não encontrado.",
       });
     }
 
     // ✅ Verifica se participante existe
-    const [participanteExiste] = await pool.execute(
-      "SELECT codigo FROM participante WHERE codigo = ?",
-      [participante_codigo]
-    );
+    const [
+      participanteExiste,
+    ] = await pool.execute("SELECT codigo FROM participante WHERE codigo = ?", [
+      participante_codigo,
+    ]);
 
     if (participanteExiste.length === 0) {
       return res.status(404).json({
-        message: "Participante não encontrado."
+        message: "Participante não encontrado.",
       });
     }
 
@@ -450,51 +441,54 @@ app.post("/api/lancamentos", async (req, res) => {
       Number(curso_id),
       Number(participante_codigo),
       instrutor.trim(),
-      data_realizacao,   // formato: "YYYY-MM-DD"
-      data_vencimento,   // formato: "YYYY-MM-DD"
-      descricao?.trim() || null
+      data_realizacao, // formato: "YYYY-MM-DD"
+      data_vencimento, // formato: "YYYY-MM-DD"
+      descricao?.trim() || null,
     ];
 
     const [result] = await pool.execute(sql, params);
 
     return res.status(201).json({
       codigo: result.insertId,
-      message: "Lançamento salvo com sucesso!"
+      message: "Lançamento salvo com sucesso!",
     });
-
   } catch (err) {
     console.error(err);
     return res.status(500).json({
-      message: "Erro interno ao salvar lançamento."
+      message: "Erro interno ao salvar lançamento.",
     });
   }
 });
 
 // POST /api/lancamentos/:codigo/anexos
-app.post("/api/lancamentos/:codigo/anexos", upload.single("file"), async (req, res) => {
-  try {
-    const lancamentoCodigo = Number(req.params.codigo);
+app.post(
+  "/api/lancamentos/:codigo/anexos",
+  upload.single("file"),
+  async (req, res) => {
+    try {
+      const lancamentoCodigo = Number(req.params.codigo);
 
-    if (!req.file) {
-      return res.status(400).json({ message: "Nenhum arquivo enviado." });
-    }
+      if (!req.file) {
+        return res.status(400).json({ message: "Nenhum arquivo enviado." });
+      }
 
-    // valida se lançamento existe
-    const [lancExiste] = await pool.execute(
-      "SELECT codigo FROM lancamento WHERE codigo = ?",
-      [lancamentoCodigo]
-    );
-    if (lancExiste.length === 0) {
-      return res.status(404).json({ message: "Lançamento não encontrado." });
-    }
+      // valida se lançamento existe
+      const [
+        lancExiste,
+      ] = await pool.execute("SELECT codigo FROM lancamento WHERE codigo = ?", [
+        lancamentoCodigo,
+      ]);
+      if (lancExiste.length === 0) {
+        return res.status(404).json({ message: "Lançamento não encontrado." });
+      }
 
-    const nomeOriginal = req.file.originalname;
-    const nomeArquivo = req.file.filename;
-    const mimeType = req.file.mimetype;
-    const tamanhoBytes = req.file.size;
-    const caminho = `uploads/${nomeArquivo}`; // relativo
+      const nomeOriginal = req.file.originalname;
+      const nomeArquivo = req.file.filename;
+      const mimeType = req.file.mimetype;
+      const tamanhoBytes = req.file.size;
+      const caminho = `uploads/${nomeArquivo}`; // relativo
 
-    const sql = `
+      const sql = `
     INSERT INTO lancamento_anexo (
       lancamento_codigo,
       nome_original,
@@ -505,32 +499,30 @@ app.post("/api/lancamentos/:codigo/anexos", upload.single("file"), async (req, r
     ) VALUES (?, ?, ?, ?, ?, ?)
     `;
 
+      const params = [
+        lancamentoCodigo,
+        nomeOriginal,
+        nomeArquivo,
+        mimeType,
+        tamanhoBytes,
+        caminho,
+      ];
 
-    const params = [
-      lancamentoCodigo,
-      nomeOriginal,
-      nomeArquivo,
-      mimeType,
-      tamanhoBytes,
-      caminho
-    ];
+      const [result] = await pool.execute(sql, params);
 
-    const [result] = await pool.execute(sql, params);
-
-    return res.status(201).json({
-      id: result.insertId,
-      message: "Anexo salvo com sucesso!"
-    });
-
-  } catch (err) {
-  console.error("ERRO UPLOAD ANEXO:", err);
-  return res.status(500).json({
-    message: "Erro interno ao salvar anexo.",
-    detail: err?.message ?? String(err)
-  });
-}
-
-});
+      return res.status(201).json({
+        id: result.insertId,
+        message: "Anexo salvo com sucesso!",
+      });
+    } catch (err) {
+      console.error("ERRO UPLOAD ANEXO:", err);
+      return res.status(500).json({
+        message: "Erro interno ao salvar anexo.",
+        detail: err?.message ?? String(err),
+      });
+    }
+  }
+);
 
 // GET /api/certificados?participante_codigo=123
 app.get("/api/certificados", async (req, res) => {
@@ -538,7 +530,9 @@ app.get("/api/certificados", async (req, res) => {
     const participanteCodigo = Number(req.query.participante_codigo);
 
     if (!participanteCodigo) {
-      return res.status(400).json({ message: "participante_codigo é obrigatório." });
+      return res
+        .status(400)
+        .json({ message: "participante_codigo é obrigatório." });
     }
 
     const sql = `
@@ -565,12 +559,15 @@ app.get("/api/certificados", async (req, res) => {
 // GET /api/relatorios/certificados-vencimento?q=
 app.get("/api/relatorios/certificados-vencimento", async (req, res) => {
   try {
-    const q = (req.query.q ?? "").toString().trim();
+    console.log("FILTROS CERTIFICADOS:", req.query);
+    const igreja = (req.query.igreja ?? "").toString().trim();
+    const status = (req.query.status ?? "").toString().trim();
 
     let sql = `
       SELECT
         p.nome_completo AS participanteNome,
-        c.nome_curso    AS curso,
+        c.nome_curso AS curso,
+        p.igreja AS comum,
         DATE(l.data_vencimento) AS dataVencimento,
         CASE
           WHEN DATE(l.data_vencimento) < CURDATE() THEN 'Vencido'
@@ -579,13 +576,24 @@ app.get("/api/relatorios/certificados-vencimento", async (req, res) => {
       FROM lancamento l
       INNER JOIN participante p ON p.codigo = l.participante_codigo
       INNER JOIN curso c ON c.id = l.curso_id
-     `;
+      WHERE 1 = 1
+    `;
 
     const params = [];
 
-    if (q.length > 0) {
-      sql += ` AND (p.nome_completo LIKE ? OR c.nome_curso LIKE ?) `;
-      params.push(`%${q}%`, `%${q}%`);
+    if (igreja.length > 0) {
+      sql += " AND p.igreja LIKE ? ";
+      params.push(`%${igreja}%`);
+    }
+
+    if (status.length > 0) {
+      if (status === "Vencido") {
+        sql += " AND DATE(l.data_vencimento) < CURDATE() ";
+      }
+
+      if (status === "A vencer") {
+        sql += " AND DATE(l.data_vencimento) >= CURDATE() ";
+      }
     }
 
     sql += ` ORDER BY DATE(l.data_vencimento) ASC, p.nome_completo ASC`;
@@ -619,15 +627,21 @@ app.put("/api/participantes/:codigo", async (req, res) => {
     } = req.body;
 
     if (!codigo) {
-      return res.status(400).json({ message: "Código do participante inválido." });
+      return res
+        .status(400)
+        .json({ message: "Código do participante inválido." });
     }
 
     if (!nomeCompleto || !igreja || !dataCadastro || !status) {
-      return res.status(400).json({ message: "Campos obrigatórios não preenchidos." });
+      return res
+        .status(400)
+        .json({ message: "Campos obrigatórios não preenchidos." });
     }
 
     if (!["ATIVO", "INATIVO"].includes(status)) {
-      return res.status(400).json({ message: "Status inválido. Use ATIVO ou INATIVO." });
+      return res
+        .status(400)
+        .json({ message: "Status inválido. Use ATIVO ou INATIVO." });
     }
 
     let cpfNormalizado = null;
@@ -639,14 +653,16 @@ app.put("/api/participantes/:codigo", async (req, res) => {
         return res.status(400).json({ message: "CPF inválido." });
       }
 
-      const [cpfExistente] = await pool.execute(
+      const [
+        cpfExistente,
+      ] = await pool.execute(
         "SELECT codigo FROM participante WHERE cpf = ? AND codigo <> ?",
         [cpfNormalizado, codigo]
       );
 
       if (cpfExistente.length > 0) {
         return res.status(409).json({
-          message: "Já existe outro participante cadastrado com este CPF."
+          message: "Já existe outro participante cadastrado com este CPF.",
         });
       }
     }
@@ -668,18 +684,18 @@ app.put("/api/participantes/:codigo", async (req, res) => {
 
     const dataCadastroFormatada = String(dataCadastro).slice(0, 10);
 
-const params = [
-  nomeCompleto.trim(),
-  cpfNormalizado,
-  email?.trim() || null,
-  igreja.trim(),
-  dataCadastroFormatada,
-  status,
-  telefone1?.trim() || null,
-  telefone2?.trim() || null,
-  observacoes?.trim() || null,
-  codigo,
-];
+    const params = [
+      nomeCompleto.trim(),
+      cpfNormalizado,
+      email?.trim() || null,
+      igreja.trim(),
+      dataCadastroFormatada,
+      status,
+      telefone1?.trim() || null,
+      telefone2?.trim() || null,
+      observacoes?.trim() || null,
+      codigo,
+    ];
 
     const [result] = await pool.execute(sql, params);
 
@@ -695,6 +711,49 @@ const params = [
     console.error("ERRO ATUALIZAR PARTICIPANTE:", err);
     return res.status(500).json({
       message: "Erro interno ao atualizar participante.",
+    });
+  }
+});
+
+app.get("/api/relatorios/participantes", async (req, res) => {
+  try {
+    const igreja = (req.query.igreja ?? "").toString().trim();
+    const status = (req.query.status ?? "").toString().trim();
+
+    let sql = `
+      SELECT
+        codigo,
+        nome_completo AS nomeCompleto,
+        cpf,
+        email,
+        igreja,
+        data_cadastro AS dataCadastro,
+        status
+      FROM participante
+      WHERE 1 = 1
+    `;
+
+    const params = [];
+
+    if (igreja.length > 0) {
+      sql += " AND igreja LIKE ? ";
+      params.push(`%${igreja}%`);
+    }
+
+    if (status.length > 0) {
+      sql += " AND status = ? ";
+      params.push(status);
+    }
+
+    sql += " ORDER BY nome_completo ASC";
+
+    const [rows] = await pool.execute(sql, params);
+    return res.json(rows);
+  } catch (err) {
+    console.error("ERRO RELATORIO PARTICIPANTES:", err);
+    return res.status(500).json({
+      message: "Erro ao listar relatório de participantes.",
+      detail: err.message,
     });
   }
 });

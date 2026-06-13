@@ -26,10 +26,17 @@ listarPorParticipante(participanteCodigo: number): Observable<CertificadoDto[]> 
     );
   }
 
-  listarRelatorioVencimento(q?: string) {
+  listarRelatorioVencimento(igreja: string = '', status: string = '') {
+  console.log('Filtro enviado:', { igreja, status });
+
   return this.http.get<any[]>(
     `${this.baseUrl}/api/relatorios/certificados-vencimento`,
-    { params: q ? { q } : {} }
+    {
+      params: {
+        igreja,
+        status
+      }
+    }
   );
 }
 }
