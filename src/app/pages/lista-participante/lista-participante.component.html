@@ -1,0 +1,72 @@
+<section class="content">
+  <header class="content-header">
+    <div class="title-wrap">
+      <h1>Participantes</h1>
+      <p>Consulte os Participantes cadastrados.</p>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="toolbar">
+      <div class="form-group search">
+        <label>Pesquisar por nome</label>
+        <input
+          type="text"
+          [formControl]="form.controls.q"
+          placeholder="Digite o nome do participante..."
+          (keyup.enter)="pesquisar()"
+        />
+      </div>
+
+      <button type="button" class="btn btn-ghost" (click)="limpar()">
+        Limpar
+      </button>
+<button type="button" class="btn btn-primary" (click)="novoParticipante()">
+  Novo Participante
+</button>
+    </div>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>CPF</th>
+          <th>E-mail</th>
+          <th>Igreja</th>
+          <th>Data Cadastro</th>
+          <th>Status</th>
+          <th class="acoes">Ações</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let participante of participantes">
+          <td>{{ participante.nomeCompleto }}</td>
+          <td>{{ participante.cpf }}</td>
+          <td>{{ participante.email }}</td>
+          <td>{{ participante.igreja }}</td>
+          <td>{{ participante.dataCadastro | date: 'dd/MM/yy' }}</td>
+          <td>
+            <span class="status" [ngClass]="statusClass(participante.status)">
+              {{ participante.status }}
+            </span>
+          </td>
+          <td class="acoes">
+            <button
+              type="button"
+              class="btn-editar"
+              (click)="editar(participante)">
+              Editar
+            </button>
+          </td>
+        </tr>
+
+        <tr *ngIf="participantes.length === 0">
+          <td colspan="7" class="empty">
+            Nenhum participante encontrado.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -601,4 +601,102 @@ app.get("/api/relatorios/certificados-vencimento", async (req, res) => {
   }
 });
 
+// PUT /api/participantes/:codigo -> atualiza participante
+app.put("/api/participantes/:codigo", async (req, res) => {
+  try {
+    const codigo = Number(req.params.codigo);
+
+    const {
+      nomeCompleto,
+      cpf,
+      email,
+      igreja,
+      dataCadastro,
+      status,
+      telefone1,
+      telefone2,
+      observacoes,
+    } = req.body;
+
+    if (!codigo) {
+      return res.status(400).json({ message: "Código do participante inválido." });
+    }
+
+    if (!nomeCompleto || !igreja || !dataCadastro || !status) {
+      return res.status(400).json({ message: "Campos obrigatórios não preenchidos." });
+    }
+
+    if (!["ATIVO", "INATIVO"].includes(status)) {
+      return res.status(400).json({ message: "Status inválido. Use ATIVO ou INATIVO." });
+    }
+
+    let cpfNormalizado = null;
+
+    if (cpf && String(cpf).trim() !== "") {
+      cpfNormalizado = String(cpf).replace(/\D/g, "");
+
+      if (cpfNormalizado.length !== 11) {
+        return res.status(400).json({ message: "CPF inválido." });
+      }
+
+      const [cpfExistente] = await pool.execute(
+        "SELECT codigo FROM participante WHERE cpf = ? AND codigo <> ?",
+        [cpfNormalizado, codigo]
+      );
+
+      if (cpfExistente.length > 0) {
+        return res.status(409).json({
+          message: "Já existe outro participante cadastrado com este CPF."
+        });
+      }
+    }
+
+    const sql = `
+      UPDATE participante
+      SET
+        nome_completo = ?,
+        cpf = ?,
+        email = ?,
+        igreja = ?,
+        data_cadastro = ?,
+        status = ?,
+        telefone1 = ?,
+        telefone2 = ?,
+        observacoes = ?
+      WHERE codigo = ?
+    `;
+
+    const dataCadastroFormatada = String(dataCadastro).slice(0, 10);
+
+const params = [
+  nomeCompleto.trim(),
+  cpfNormalizado,
+  email?.trim() || null,
+  igreja.trim(),
+  dataCadastroFormatada,
+  status,
+  telefone1?.trim() || null,
+  telefone2?.trim() || null,
+  observacoes?.trim() || null,
+  codigo,
+];
+
+    const [result] = await pool.execute(sql, params);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Participante não encontrado." });
+    }
+
+    return res.json({
+      codigo,
+      message: "Participante atualizado com sucesso!",
+    });
+  } catch (err) {
+    console.error("ERRO ATUALIZAR PARTICIPANTE:", err);
+    return res.status(500).json({
+      message: "Erro interno ao atualizar participante.",
+    });
+  }
+});
+
 app.listen(3000, () => console.log("API rodando em http://localhost:3000"));

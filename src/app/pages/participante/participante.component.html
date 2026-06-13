@@ -14,7 +14,7 @@
 
     <!-- ✅ ALERT (somente ele fica dentro do *ngIf) -->
     <div *ngIf="mostrarAlert" class="alert-cursos" role="alert">
-      <div><strong>Sucesso!</strong> Participante cadastrado com sucesso!</div>
+      <strong>Sucesso!</strong> {{ mensagemSucesso }}
 
       <button
         type="button"

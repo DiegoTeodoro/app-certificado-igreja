@@ -106,4 +106,23 @@ export class ParticipanteService {
 
     return throwError(() => new Error('Erro inesperado.'));
   }
+  update(codigo: number, payload: ParticipanteRequest): Observable<ParticipanteResponse> {
+  const body: ParticipanteRequest = {
+    ...payload,
+    cpf: payload.cpf?.trim(),
+    email: payload.email?.trim(),
+    igreja: payload.igreja?.trim(),
+    nomeCompleto: payload.nomeCompleto?.trim(),
+    telefone1: payload.telefone1?.trim(),
+    telefone2: payload.telefone2?.trim() ? payload.telefone2.trim() : null,
+    observacoes: payload.observacoes?.trim() ? payload.observacoes.trim() : null,
+  };
+
+  return this.http.put<ParticipanteResponse>(
+    `${this.baseUrl}/${codigo}`,
+    body
+  ).pipe(
+    catchError((err) => this.handleError(err))
+  );
+}
 }

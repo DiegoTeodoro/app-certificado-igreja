@@ -1,78 +1,124 @@
-import { Component, OnDestroy } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ParticipanteService, ParticipanteRequest } from '../../../core/participante.service';
-import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, OnInit } from "@angular/core";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
+import {
+  ParticipanteService,
+  ParticipanteRequest,
+} from "../../../core/participante.service";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-participante',
+  selector: "app-participante",
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
-  templateUrl: './participante.component.html',
-  styleUrl: './participante.component.scss',
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: "./participante.component.html",
+  styleUrl: "./participante.component.scss",
 })
-export class ParticipanteComponent implements OnDestroy {
+export class ParticipanteComponent implements OnInit, OnDestroy {
+  [x: string]: any;
+
   form;
+  codigoEditando: number | null = null;
 
   mostrarAlert = false;
+  mensagemSucesso = "";
+
   private alertTimer: any;
   mostrarErro = false;
-  mensagemErro = '';
+  mensagemErro = "";
 
   constructor(
     private fb: FormBuilder,
     private participanteService: ParticipanteService
   ) {
     this.form = this.fb.group({
-      nomeCompleto: ['', [Validators.required, Validators.maxLength(150)]],
-      cpf: ['', [Validators.maxLength(14)]],
-      email: ['', [Validators.email, Validators.maxLength(150)]],
+      nomeCompleto: ["", [Validators.required, Validators.maxLength(150)]],
+      cpf: ["", [Validators.maxLength(14)]],
+      email: ["", [Validators.email, Validators.maxLength(150)]],
 
-      dataCadastro: ['', Validators.required],
-      igreja: ['', [Validators.required, Validators.maxLength(150)]],
-      status: ['ATIVO', Validators.required],
+      dataCadastro: ["", Validators.required],
+      igreja: ["", [Validators.required, Validators.maxLength(150)]],
+      status: ["ATIVO", Validators.required],
 
-      observacoes: [''],
-      telefone1: ['', [Validators.maxLength(20)]],
-      telefone2: ['', [Validators.maxLength(20)]],
+      observacoes: [""],
+      telefone1: ["", [Validators.maxLength(20)]],
+      telefone2: ["", [Validators.maxLength(20)]],
     });
 
     const hoje = new Date().toISOString().slice(0, 10);
     this.form.patchValue({ dataCadastro: hoje });
   }
 
-  salvar() {
-  if (this.form.invalid) {
-    this.form.markAllAsTouched();
+  ngOnInit(): void {
+    const state = history.state;
 
-    this.mensagemErro = 'Preencha todos os campos obrigatórios.';
-    this.mostrarErroAlert();
+    if (state?.participante) {
+      this.codigoEditando = state.participante.codigo;
 
-    return;
+      this.form.patchValue({
+        nomeCompleto: state.participante.nomeCompleto,
+        cpf: state.participante.cpf,
+        email: state.participante.email,
+        igreja: state.participante.igreja,
+        dataCadastro: state.participante.dataCadastro,
+        status: state.participante.status,
+        telefone1: state.participante.telefone1,
+        telefone2: state.participante.telefone2,
+        observacoes: state.participante.observacoes,
+      });
+    }
   }
+  salvar() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
 
-  const payload = this.form.value as ParticipanteRequest;
+      this.mensagemErro = "Preencha todos os campos obrigatórios.";
+      this.mostrarErroAlert();
 
-  this.participanteService.create(payload).subscribe({
-    next: (res) => {
+      return;
+    }
+
+    const payload = this.form.value as ParticipanteRequest;
+
+   if (this.codigoEditando) {
+  this.participanteService.update(this.codigoEditando, payload).subscribe({
+    next: () => {
+      this.mensagemSucesso = "Participante atualizado com sucesso!";
       this.mostrarAlertSucesso();
+
+      this.codigoEditando = null;
       this.limpar();
     },
     error: (e) => {
-      this.mensagemErro = 'Erro ao salvar participante.';
+      this.mensagemErro = e.message || "Erro ao atualizar participante.";
       this.mostrarErroAlert();
     },
   });
+
+  return;
 }
 
-private mostrarErroAlert() {
-  this.mostrarErro = true;
+    this.participanteService.create(payload).subscribe({
+      next: () => {
+        this.mensagemSucesso = "Participante cadastrado com sucesso!";
+        this.mostrarAlertSucesso();
+        this.limpar();
+      },
+      error: (e) => {
+        this.mensagemErro = e.message || "Erro ao salvar participante.";
+        this.mostrarErroAlert();
+      },
+    });
+  }
 
-  if (this.alertTimer) clearTimeout(this.alertTimer);
+  private mostrarErroAlert() {
+    this.mostrarErro = true;
 
-  this.alertTimer = setTimeout(() => {
-    this.mostrarErro = false;
-  }, 3000);
-}
+    if (this.alertTimer) clearTimeout(this.alertTimer);
+
+    this.alertTimer = setTimeout(() => {
+      this.mostrarErro = false;
+    }, 3000);
+  }
   private mostrarAlertSucesso() {
     this.mostrarAlert = true;
 
@@ -92,7 +138,7 @@ private mostrarErroAlert() {
 
   limpar() {
     const hoje = new Date().toISOString().slice(0, 10);
-    this.form.reset({ status: 'ATIVO', dataCadastro: hoje });
+    this.form.reset({ status: "ATIVO", dataCadastro: hoje });
   }
 
   ngOnDestroy(): void {
