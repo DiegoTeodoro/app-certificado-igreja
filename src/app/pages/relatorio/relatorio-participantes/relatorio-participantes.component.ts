@@ -70,8 +70,8 @@ export class RelatorioParticipantesComponent implements OnInit {
 
     const linhas = this.participantes.map(p => ({
       Nome: p.nomeCompleto,
-      CPF: p.cpf || '',
-      Email: p.email || '',
+      //CPF: p.cpf || '',
+      //Email: p.email || '',
       Igreja: p.igreja,
       'Data Cadastro': p.dataCadastro,
       Status: p.status
@@ -80,7 +80,7 @@ export class RelatorioParticipantesComponent implements OnInit {
     const cabecalho = Object.keys(linhas[0] || {
       Nome: '',
       CPF: '',
-      Email: '',
+      //Email: '',
       Igreja: '',
       'Data Cadastro': '',
       Status: ''
@@ -151,8 +151,6 @@ imprimirPdf(): void {
   const linhas = this.participantes.map(p => `
     <tr>
       <td>${p.nomeCompleto || ''}</td>
-      <td>${p.cpf || ''}</td>
-      <td>${p.email || ''}</td>
       <td>${p.igreja || ''}</td>
       <td>${this.formatarData(p.dataCadastro)}</td>
       <td>${p.status || ''}</td>
@@ -162,8 +160,7 @@ imprimirPdf(): void {
   const html = `
     <html>
       <head>
-        <title>Relatório - Participantes</title>
-
+    
         <style>
           body {
             font-family: Arial, sans-serif;
@@ -173,7 +170,7 @@ imprimirPdf(): void {
 
           .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
           }
 
           .header h1 {
@@ -193,9 +190,11 @@ imprimirPdf(): void {
           }
 
           .titulo-relatorio {
+            width: 100%;
+            text-align: center;
             font-size: 20px;
-            text-align: left;
-            margin-top: 10px;
+            font-weight: bold;
+            margin: 15px 0 20px 0;
           }
 
           table {
@@ -246,8 +245,6 @@ imprimirPdf(): void {
           <thead>
             <tr>
               <th>Nome</th>
-              <th>CPF</th>
-              <th>E-mail</th>
               <th>Igreja</th>
               <th>Data Cadastro</th>
               <th>Status</th>

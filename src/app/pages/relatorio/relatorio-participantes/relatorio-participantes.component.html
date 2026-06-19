@@ -51,8 +51,8 @@
       <thead>
         <tr>
           <th>Nome</th>
-          <th>CPF</th>
-          <th>E-mail</th>
+          <!--<th>CPF</th>-->
+          <!--<th>E-mail</th>-->
           <th>Igreja</th>
           <th>Data Cadastro</th>
           <th>Status</th>
@@ -62,8 +62,8 @@
       <tbody>
         <tr *ngFor="let participante of participantesPaginados">
           <td>{{ participante.nomeCompleto }}</td>
-          <td>{{ participante.cpf }}</td>
-          <td>{{ participante.email }}</td>
+          <!--<td>{{ participante.cpf }}</td>-->
+          <!--<td>{{ participante.email }}</td>-->
           <td>{{ participante.igreja }}</td>
           <td>{{ participante.dataCadastro | date: 'dd/MM/yyyy' }}</td>
           <td>
