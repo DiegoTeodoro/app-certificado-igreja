@@ -758,4 +758,152 @@ app.get("/api/relatorios/participantes", async (req, res) => {
   }
 });
 
+// POST /api/usuarios -> cria usuário
+app.post("/api/usuarios", async (req, res) => {
+  try {
+    const { login, senha, status } = req.body;
+
+    if (!login || !senha || !status) {
+      return res.status(400).json({ message: "Campos obrigatórios não preenchidos." });
+    }
+
+    if (!["ATIVO", "INATIVO"].includes(status)) {
+      return res.status(400).json({ message: "Status inválido." });
+    }
+
+    const [existe] = await pool.execute(
+      "SELECT id FROM usuario WHERE login = ?",
+      [login.trim()]
+    );
+
+    if (existe.length > 0) {
+      return res.status(409).json({ message: "Login já cadastrado." });
+    }
+
+    const sql = `
+      INSERT INTO usuario (login, senha, status)
+      VALUES (?, ?, ?)
+    `;
+
+    const [result] = await pool.execute(sql, [
+      login.trim(),
+      senha.trim(),
+      status
+    ]);
+
+    return res.status(201).json({
+      id: result.insertId,
+      message: "Usuário cadastrado com sucesso!"
+    });
+
+  } catch (err) {
+    console.error("ERRO CADASTRAR USUARIO:", err);
+    return res.status(500).json({ message: "Erro interno ao cadastrar usuário." });
+  }
+});
+
+// GET /api/usuarios -> lista usuários
+app.get("/api/usuarios", async (req, res) => {
+  try {
+    const sql = `
+      SELECT
+        id,
+        login,
+        senha,
+        status,
+        data_cadastro AS dataCadastro
+      FROM usuario
+      ORDER BY login ASC
+    `;
+
+    const [rows] = await pool.execute(sql);
+    return res.json(rows);
+
+  } catch (err) {
+    console.error("ERRO LISTAR USUARIOS:", err);
+    return res.status(500).json({ message: "Erro ao listar usuários." });
+  }
+});
+
+app.put("/api/usuarios/:id", async (req, res) => {
+
+  const { id } = req.params;
+  const { login, senha, status } = req.body;
+
+  try {
+
+    await pool.execute(
+      `
+      UPDATE usuario
+      SET
+        login = ?,
+        senha = ?,
+        status = ?
+      WHERE id = ?
+      `,
+      [
+        login,
+        senha,
+        status,
+        id
+      ]
+    );
+
+    res.json({
+      message: "Usuário atualizado com sucesso."
+    });
+
+  } catch (erro) {
+
+    console.error(erro);
+
+    res.status(500).json({
+      message: "Erro ao atualizar usuário."
+    });
+  }
+});
+
+app.post("/api/login", async (req, res) => {
+  try {
+    const { login, senha } = req.body;
+
+    if (!login || !senha) {
+      return res.status(400).json({
+        message: "Login e senha são obrigatórios."
+      });
+    }
+
+    const sql = `
+      SELECT id, login, status
+      FROM usuario
+      WHERE login = ?
+        AND senha = ?
+        AND status = 'ATIVO'
+      LIMIT 1
+    `;
+
+    const [rows] = await pool.execute(sql, [
+      login.trim(),
+      senha.trim()
+    ]);
+
+    if (rows.length === 0) {
+      return res.status(401).json({
+        message: "Login ou senha inválidos, ou usuário inativo."
+      });
+    }
+
+    return res.json({
+      message: "Login realizado com sucesso.",
+      usuario: rows[0]
+    });
+
+  } catch (err) {
+    console.error("ERRO LOGIN:", err);
+    return res.status(500).json({
+      message: "Erro interno ao realizar login."
+    });
+  }
+});
+
 app.listen(3000, () => console.log("API rodando em http://localhost:3000"));

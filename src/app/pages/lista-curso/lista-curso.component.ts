@@ -21,15 +21,21 @@ export class ListaCursoComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+opcoesPaginacao = [10, 25, 50, 100];
+  paginaAtual = 1;
+  
+
   constructor(
     private fb: FormBuilder,
     private cursoService: CursoService,
     private router: Router
   ) {
-    this.form = this.fb.group({
-      q: this.fb.control<string>(''),
+   this.form = this.fb.group({
+  q: this.fb.control<string>(''),
+  itensPorPagina: this.fb.control<number>(10),
     });
   }
+  
 
   ngOnInit(): void {
     this.form.get('q')!.valueChanges
@@ -47,6 +53,7 @@ export class ListaCursoComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (lista) => {
           this.cursos = lista;
+          this.paginaAtual = 1;
           this.carregando = false;
         },
         error: (e) => {
@@ -54,6 +61,11 @@ export class ListaCursoComponent implements OnInit, OnDestroy {
           this.cursos = [];
           this.carregando = false;
         }
+      });
+          this.form.controls.itensPorPagina.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.paginaAtual = 1;
       });
   }
 
@@ -87,4 +99,35 @@ export class ListaCursoComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
+get itensPorPagina(): number {
+  return Number(this.form.controls.itensPorPagina.value) || 10;
+}
+
+get totalRegistros(): number {
+  return this.cursos.length;
+}
+
+get totalPaginas(): number {
+  return Math.ceil(this.totalRegistros / this.itensPorPagina) || 1;
+}
+
+get cursosPaginados(): CursoRelatorioItem[] {
+  const inicio = (this.paginaAtual - 1) * this.itensPorPagina;
+  const fim = inicio + this.itensPorPagina;
+
+  return this.cursos.slice(inicio, fim);
+}
+
+paginaAnterior(): void {
+  if (this.paginaAtual > 1) {
+    this.paginaAtual--;
+  }
+}
+
+proximaPagina(): void {
+  if (this.paginaAtual < this.totalPaginas) {
+    this.paginaAtual++;
+  }
+}
+  
 }

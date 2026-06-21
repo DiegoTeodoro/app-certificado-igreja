@@ -40,7 +40,7 @@
       </thead>
 
       <tbody>
-        <tr *ngFor="let participante of participantes">
+        <tr *ngFor="let participante of participantesPaginados">
           <td>{{ participante.nomeCompleto }}</td>
           <td>{{ participante.cpf }}</td>
           <td>{{ participante.email }}</td>
@@ -61,12 +61,47 @@
           </td>
         </tr>
 
-        <tr *ngIf="participantes.length === 0">
+        <tr *ngIf="participantesPaginados.length === 0">
           <td colspan="7" class="empty">
             Nenhum participante encontrado.
           </td>
         </tr>
       </tbody>
     </table>
+    <footer class="panel-foot">
+  <div>
+    Total: {{ totalRegistros }}
+  </div>
+
+  <div class="pagination">
+    <label>Itens por página</label>
+
+    <select [formControl]="form.controls.itensPorPagina">
+      <option *ngFor="let opcao of opcoesPaginacao" [value]="opcao">
+        {{ opcao }}
+      </option>
+    </select>
+
+    <button
+      type="button"
+      class="page-btn"
+      (click)="paginaAnterior()"
+      [disabled]="paginaAtual === 1">
+      Anterior
+    </button>
+
+    <span>
+      Página {{ paginaAtual }} de {{ totalPaginas }}
+    </span>
+
+    <button
+      type="button"
+      class="page-btn"
+      (click)="proximaPagina()"
+      [disabled]="paginaAtual === totalPaginas">
+      Próxima
+    </button>
+  </div>
+</footer>
   </div>
 </section>

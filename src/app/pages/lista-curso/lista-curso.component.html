@@ -35,7 +35,7 @@
         </thead>
 
         <tbody>
-          <tr *ngFor="let c of cursos; let i = index" [class.row-alt]="i % 2 === 1">
+          <tr *ngFor="let c of cursosPaginados; let i = index" [class.row-alt]="i % 2 === 1">
             <td>{{ c.nomeCurso }}</td>
             <td>{{ c.dataCadastro | date:'dd/MM/yy':'UTC' }}</td>
             <td>{{ c.cargaHoraria }}</td>
@@ -46,11 +46,46 @@
             </td>
           </tr>
 
-          <tr *ngIf="cursos.length === 0">
+          <tr *ngIf="cursosPaginados.length === 0">
             <td colspan="5" class="empty">Nenhum curso encontrado.</td>
           </tr>
         </tbody>
       </table>
+      <footer class="panel-foot">
+  <div>
+    Total: {{ totalRegistros }}
+  </div>
+
+  <div class="pagination">
+    <label>Itens por página</label>
+
+    <select [formControl]="form.controls.itensPorPagina">
+      <option *ngFor="let opcao of opcoesPaginacao" [value]="opcao">
+        {{ opcao }}
+      </option>
+    </select>
+
+    <button
+      type="button"
+      class="page-btn"
+      (click)="paginaAnterior()"
+      [disabled]="paginaAtual === 1">
+      Anterior
+    </button>
+
+    <span>
+      Página {{ paginaAtual }} de {{ totalPaginas }}
+    </span>
+
+    <button
+      type="button"
+      class="page-btn"
+      (click)="proximaPagina()"
+      [disabled]="paginaAtual === totalPaginas">
+      Próxima
+    </button>
+  </div>
+</footer>
     </div>
   </div>
 </section>
