@@ -461,16 +461,13 @@ app.post("/api/lancamentos", async (req, res) => {
 });
 
 // POST /api/lancamentos/:codigo/anexos
-app.post(
-  "/api/lancamentos/:codigo/anexos",
-  upload.single("file"),
-  async (req, res) => {
+app.post("/api/lancamentos/:codigo/anexos", upload.array("files", 10), async (req, res) => {
     try {
       const lancamentoCodigo = Number(req.params.codigo);
 
-      if (!req.file) {
-        return res.status(400).json({ message: "Nenhum arquivo enviado." });
-      }
+     if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: "Nenhum arquivo enviado." });
+    }
 
       // valida se lançamento existe
       const [
@@ -482,38 +479,40 @@ app.post(
         return res.status(404).json({ message: "Lançamento não encontrado." });
       }
 
-      const nomeOriginal = req.file.originalname;
-      const nomeArquivo = req.file.filename;
-      const mimeType = req.file.mimetype;
-      const tamanhoBytes = req.file.size;
-      const caminho = `uploads/${nomeArquivo}`; // relativo
+            for (const file of req.files) {
+        const nomeOriginal = file.originalname;
+        const nomeArquivo = file.filename;
+        const mimeType = file.mimetype;
+        const tamanhoBytes = file.size;
+        const caminho = `uploads/${nomeArquivo}`;
 
-      const sql = `
-    INSERT INTO lancamento_anexo (
-      lancamento_codigo,
-      nome_original,
-      nome_arquivo,
-      mime_type,
-      tamanho_bytes,
-      caminho
-    ) VALUES (?, ?, ?, ?, ?, ?)
-    `;
+        const sql = `
+          INSERT INTO lancamento_anexo (
+            lancamento_codigo,
+            nome_original,
+            nome_arquivo,
+            mime_type,
+            tamanho_bytes,
+            caminho
+          ) VALUES (?, ?, ?, ?, ?, ?)
+        `;
 
-      const params = [
-        lancamentoCodigo,
-        nomeOriginal,
-        nomeArquivo,
-        mimeType,
-        tamanhoBytes,
-        caminho,
-      ];
+          const params = [
+            lancamentoCodigo,
+            nomeOriginal,
+            nomeArquivo,
+            mimeType,
+            tamanhoBytes,
+            caminho
+          ];
 
-      const [result] = await pool.execute(sql, params);
+          await pool.execute(sql, params);
+        }
 
-      return res.status(201).json({
-        id: result.insertId,
-        message: "Anexo salvo com sucesso!",
-      });
+              return res.status(201).json({
+          message: "Anexos salvos com sucesso!",
+          total: req.files.length
+        });
     } catch (err) {
       console.error("ERRO UPLOAD ANEXO:", err);
       return res.status(500).json({

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
+   { path: '', redirectTo: 'login', pathMatch: 'full' },
  {path: 'login',loadComponent: () =>import('./pages/login-acesso/login-acesso.component').then(m => m.LoginAcessoComponent)},
   // Cursos
   { path: 'cursos', loadComponent: () => import('./pages/lista-curso/lista-curso.component').then(m => m.ListaCursoComponent) },

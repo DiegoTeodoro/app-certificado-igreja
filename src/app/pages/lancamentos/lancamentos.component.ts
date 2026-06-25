@@ -73,7 +73,7 @@ export class LancamentosComponent {
       const q = texto.trim();
 
       // ✅ se a pessoa alterou o texto manualmente, invalida o cursoId anterior
-      this.form.patchValue({ cursoId: null }, { emitEvent: false });
+     //this.form.patchValue({ cursoId: null }, { emitEvent: false });
 
       if (q.length < 2) {
         this.cursosFiltrados = [];
@@ -98,7 +98,7 @@ export class LancamentosComponent {
       const q = texto.trim();
 
       // ✅ se a pessoa alterou o texto manualmente, invalida o participanteCodigo anterior
-      this.form.patchValue({ participanteCodigo: null }, { emitEvent: false });
+      //this.form.patchValue({ participanteCodigo: null }, { emitEvent: false });
 
       if (q.length < 2) {
         this.participantesFiltrados = [];
@@ -118,10 +118,18 @@ export class LancamentosComponent {
   }
   
   selecionarParticipante(p: ParticipanteListItem) {
-  this.form.patchValue({
+  
+  this.form.patchValue(
+  {
     participanteCodigo: p.codigo,
     participanteNome: p.nomeCompleto
-  });
+  },
+  
+  {
+    emitEvent: false
+  }
+ 
+);
 
   this.mostrarListaParticipantes = false;
 }
@@ -135,21 +143,27 @@ fecharListaParticipantesComDelay() {
 
   // ✅ Método para selecionar curso
   selecionarCurso(curso: CursoListItem) {
-    this.form.patchValue({
-      cursoId: curso.id,
-      nomeCurso: curso.nome_curso
-    });
-
+        this.form.patchValue(
+      {
+        cursoId: curso.id,
+        nomeCurso: curso.nome_curso
+      },
+      {
+        emitEvent: false
+      }
+    );
     this.mostrarListaCursos = false;
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file = input.files?.[0] ?? null;
-
-    this.arquivoSelecionado = file;
-    this.form.patchValue({ anexo: file });
-  }
+    onFileSelected(event: Event) {
+     const input = event.target as HTMLInputElement;
+    this.arquivosSelecionados = Array.from(input.files ?? []);
+    this.form.patchValue({
+      anexo: this.arquivosSelecionados.length > 0
+        ? this.arquivosSelecionados[0]
+        : null
+    });
+    }
 
  salvar() {
  if (this.form.invalid) {
@@ -189,11 +203,14 @@ if (!participanteCodigo) {
       const lancamentoCodigo = resp.codigo;
 
       // ✅ se tem anexo, envia e só depois mostra sucesso
-      if (this.arquivoSelecionado) {
+      if (this.arquivosSelecionados.length > 0) {
         const fd = new FormData();
-        fd.append('file', this.arquivoSelecionado);
 
-        this.lancamentoService.uploadAnexo(lancamentoCodigo, fd).subscribe({
+        this.arquivosSelecionados.forEach((arquivo) => {
+          fd.append('files', arquivo);
+        });
+
+        this.lancamentoService.uploadAnexos(lancamentoCodigo, fd).subscribe({
           next: () => {
             this.mostrarAlertSucesso(); // ✅ aqui
             this.limpar();
@@ -254,11 +271,14 @@ private mostrarAlertSucesso() {
   }, 150);
 }
 
-  limpar() {
+    limpar() {
     this.form.reset();
+    this.arquivosSelecionados = [];
     this.arquivoSelecionado = null;
     this.cursosFiltrados = [];
+    this.participantesFiltrados = [];
     this.mostrarListaCursos = false;
+    this.mostrarListaParticipantes = false;
   }
 
   onFilesSelected(event: Event) {

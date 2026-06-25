@@ -109,12 +109,18 @@
               Anexos
             </button>
 
-            <input #filePicker type="file" hidden (change)="onFileSelected($event)" />
+            <input
+            #filePicker
+            type="file"
+            hidden
+            multiple
+            (change)="onFilesSelected($event)"/>
 
-            <span class="file-name" *ngIf="arquivoSelecionado; else semArquivo">
-              {{ arquivoSelecionado.name }}
-            </span>
-
+           <div class="file-name" *ngIf="arquivosSelecionados.length > 0; else semArquivo">
+            <div *ngFor="let arquivo of arquivosSelecionados">
+              {{ arquivo.name }}
+            </div>
+          </div>
             <ng-template #semArquivo>
               <span class="file-name">Nenhum arquivo selecionado</span>
             </ng-template>

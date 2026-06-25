@@ -54,6 +54,11 @@ export class LancamentoService {
   atualizar(codigo: number, payload: Partial<LancamentoCreateRequest>): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/${codigo}`, payload);
   }
-
+  uploadAnexos(lancamentoCodigo: number, formData: FormData) {
+  return this.http.post(
+    `${this.apiUrl}/${lancamentoCodigo}/anexos`,
+    formData
+  );
+}
  
 }

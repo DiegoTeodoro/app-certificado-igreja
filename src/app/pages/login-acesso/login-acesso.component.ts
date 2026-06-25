@@ -27,15 +27,30 @@ export class LoginAcessoComponent {
   }
 
   logar(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.mensagemErro = 'Informe login e senha.';
-      return;
+
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    this.mensagemErro = 'Informe login e senha.';
+    return;
+  }
+
+  const payload = {
+    login: this.form.controls.login.value || '',
+    senha: this.form.controls.senha.value || ''
+  };
+
+  this.authService.login(payload).subscribe({
+
+    next: (res) => {
+      this.authService.salvarSessao(res.usuario);
+      this.router.navigate(['/cursos']);
+    },
+
+    error: (e) => {
+      this.mensagemErro =
+        e.message || 'Login ou senha inválidos.';
     }
 
-    console.log('Login:', this.form.value);
-
-    // depois vamos chamar a API aqui
-    this.router.navigate(['/cursos']);
-  }
+  });
+}
 }

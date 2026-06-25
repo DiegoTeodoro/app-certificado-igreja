@@ -7,6 +7,7 @@ export interface LoginRequest {
   senha: string;
 }
 
+
 export interface LoginResponse {
   usuario: {
     id: number;
@@ -35,27 +36,25 @@ export class AuthService {
   }
 
   salvarSessao(usuario: any): void {
-    localStorage.setItem(
-      'usuarioLogado',
-      JSON.stringify(usuario)
-    );
-  }
+  sessionStorage.setItem(
+    'usuarioLogado',
+    JSON.stringify(usuario)
+  );
+}
 
-  obterUsuarioLogado(): any {
-    const usuario = localStorage.getItem('usuarioLogado');
+obterUsuarioLogado(): any {
+  const usuario = sessionStorage.getItem('usuarioLogado');
 
-    return usuario
-      ? JSON.parse(usuario)
-      : null;
-  }
+  return usuario ? JSON.parse(usuario) : null;
+}
 
-  estaLogado(): boolean {
-    return !!localStorage.getItem('usuarioLogado');
-  }
+estaLogado(): boolean {
+  return !!sessionStorage.getItem('usuarioLogado');
+}
 
-  logout(): void {
-    localStorage.removeItem('usuarioLogado');
-  }
+logout(): void {
+  sessionStorage.removeItem('usuarioLogado');
+}
 
   private handleError(err: unknown) {
 
@@ -74,4 +73,5 @@ export class AuthService {
       () => new Error('Erro inesperado.')
     );
   }
+  
 }
