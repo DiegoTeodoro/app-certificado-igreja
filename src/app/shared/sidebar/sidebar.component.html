@@ -1,53 +1,98 @@
 <aside class="sidebar">
 
   <!-- ================== CADASTRO ================== -->
-  <div class="sidebar__section-title">Cadastro</div>
+ <div class="sidebar__section-title"
+     (click)="toggleCadastro()">
 
- <nav class="sidebar__nav">
-  <a class="sidebar__item" routerLink="/cursos" routerLinkActive="active">
-    Curso
+  <div class="menu-title">
+    <i class="bi bi-folder2-open"></i>
+    <span>Cadastro</span>
+  </div>
+
+  <span class="arrow">
+    {{ cadastroAberto ? '▼' : '▶' }}
+  </span>
+
+</div>
+
+<nav
+  class="sidebar__nav" *ngIf="cadastroAberto">
+
+  <a class="sidebar__item" routerLink="/cursos"routerLinkActive="active">
+    <i class="bi bi-journal-bookmark-fill"></i>
+      Curso
   </a>
 
-  <!--<a class="sidebar__item" routerLink="/novo-curso" routerLinkActive="active">
-    Novo Curso
-  </a>-->
- <a class="sidebar__item" routerLink="/participante" routerLinkActive="active">
-  Participante
-</a>
+  <a class="sidebar__item" routerLink="/participante"routerLinkActive="active">
+    <i class="bi bi-person-fill"></i>
+     Participante
+  </a>
 
-<a class="sidebar__item" routerLink="/cadastro-usuario" routerLinkActive="active">
-  Usuário
-</a>
+  <a class="sidebar__item"routerLink="/cadastro-usuario" routerLinkActive="active">
+    <i class="bi bi-people-fill"></i>
+      Usuário
+  </a>
 
-<!--<a class="sidebar__item" routerLink="/login" routerLinkActive="active">
-  Login-acesso
-</a>-->
+</nav>
+  <!--<a class="sidebar__item" routerLink="/novo-curso" routerLinkActive="active">-->
+ <div class="sidebar__section-title"
+     (click)="toggleLancamento()">
 
-   <!-- <a class="sidebar__item" routerLink="/novo-participante" routerLinkActive="active">
-      Participante-cadastro
-    </a>-->
+    <div class="menu-title">
+        <i class="bi bi-clipboard-check-fill"></i>
+        <span>Lançamento Voluntário</span>
+    </div>
 
-    <a class="sidebar__item" routerLink="/certificados" routerLinkActive="active">
+    <span class="arrow">
+        {{ lancamentoAberto ? '▼' : '▶' }}
+    </span>
+
+</div>
+
+<nav
+  class="sidebar__nav"
+  *ngIf="lancamentoAberto">
+
+  <a class="sidebar__item" routerLink="/certificados"routerLinkActive="active">
+     <i class="bi bi-award-fill"></i>
       Certificados
-    </a>
+  </a>
 
-    <a class="sidebar__item" routerLink="/lancamentos" routerLinkActive="active">
+  <a class="sidebar__item" routerLink="/lancamentos"routerLinkActive="active">
+     <i class="bi bi-file-earmark-plus-fill"></i>
       Lançamentos
-    </a>
-  </nav>
+  </a>
 
-  <!-- ================== RELATÓRIO ================== -->
-  <div class="sidebar__section-title mt-3">Relatório</div>
+</nav>
 
-  <nav class="sidebar__nav">
-   <a class="sidebar__item" routerLink="/relatorio-participantes" routerLinkActive="active">
-  Participante
-</a>
+ <div class="sidebar__section-title"
+     (click)="toggleRelatorio()">
+ <i class="bi bi-bar-chart-fill"></i>
+  Relatórios
 
-    <a class="sidebar__item" routerLink="/relatorio-certificado-vencer" routerLinkActive="active">
+  <span class="arrow">
+    {{ relatorioAberto ? '▼' : '▶' }}
+  </span>
+
+</div>
+
+<nav
+  class="sidebar__nav"
+  *ngIf="relatorioAberto">
+
+  <a class="sidebar__item"
+     routerLink="/relatorio-participantes"
+     routerLinkActive="active">
+     <i class="bi bi-file-earmark-person-fill"></i>
+
+      Participantes
+  </a>
+
+  <a class="sidebar__item"
+     routerLink="/relatorio-certificado-vencer"
+     routerLinkActive="active">
+     <i class="bi bi-exclamation-triangle-fill"></i>
       Certificados a Vencer
-    </a>
+  </a>
 
-  </nav>
-
-</aside>
+</nav>

@@ -1,12 +1,30 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive],
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
+
+  cadastroAberto = true;
+  lancamentoAberto = true;
+  relatorioAberto = false;
+
+  toggleCadastro() {
+    this.cadastroAberto = !this.cadastroAberto;
+  }
+
+  toggleLancamento() {
+    this.lancamentoAberto = !this.lancamentoAberto;
+  }
+
+  toggleRelatorio() {
+    this.relatorioAberto = !this.relatorioAberto;
+  }
 
 }

@@ -1,10 +1,7 @@
 <header class="navbar">
+
   <div class="navbar__left">
-    <img
-      class="navbar__icon"
-      src="/assets/icons/certificado.png"
-      alt="Certificado"
-    />
+    <i class="bi bi-mortarboard-fill"></i>
 
     <span class="navbar__title">
       Sistema de Cursos e Certificados
@@ -13,16 +10,15 @@
 
   <div class="navbar__right">
 
-    <span class="usuario-logado">
-      Olá, {{ nomeUsuario }}
-    </span>
+    <i class="bi bi-person-circle"></i>
 
-    <button
-      type="button"
-      class="btn-sair"
-      (click)="logout()">
+    <span>{{ nomeUsuario }}</span>
+
+    <button class="btn-sair" (click)="logout()">
+      <i class="bi bi-box-arrow-right"></i>
       Sair
     </button>
 
   </div>
+
 </header>
