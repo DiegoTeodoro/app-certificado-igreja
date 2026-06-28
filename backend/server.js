@@ -90,7 +90,7 @@ app.get("/api/cursos", async (req, res) => {
   try {
     const q = (req.query.q ?? "").toString().trim();
 
-    let sql = "SELECT id, nome_curso FROM curso";
+   let sql = `SELECT id, nome_curso,validade_meses AS validadeCertificado FROM curso`;
     let params = [];
 
     if (q.length > 0) {
@@ -901,6 +901,39 @@ app.post("/api/login", async (req, res) => {
     console.error("ERRO LOGIN:", err);
     return res.status(500).json({
       message: "Erro interno ao realizar login."
+    });
+  }
+});
+// GET /api/home/resumo -> totais do dashboard
+app.get("/api/home/resumo", async (req, res) => {
+  try {
+    const [[cursos]] = await pool.execute(`
+      SELECT COUNT(*) AS total FROM curso
+    `);
+
+    const [[participantes]] = await pool.execute(`
+      SELECT COUNT(*) AS total FROM participante
+    `);
+
+    const [[lancamentos]] = await pool.execute(`
+      SELECT COUNT(*) AS total FROM lancamento
+    `);
+
+    const [[certificados]] = await pool.execute(`
+      SELECT COUNT(*) AS total FROM lancamento
+    `);
+
+    return res.json({
+      cursos: cursos.total,
+      participantes: participantes.total,
+      certificados: certificados.total,
+      lancamentos: lancamentos.total
+    });
+
+  } catch (err) {
+    console.error("ERRO DASHBOARD:", err);
+    return res.status(500).json({
+      message: "Erro ao carregar dashboard."
     });
   }
 });

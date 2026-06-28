@@ -36,7 +36,7 @@ export class LancamentosComponent {
 
   mostrarListaParticipantes = false;
   participantesFiltrados: ParticipanteListItem[] = [];
-
+  
   constructor(
     private fb: FormBuilder,
     private lancamentoService: LancamentoService,
@@ -50,7 +50,8 @@ export class LancamentosComponent {
   cursoId: this.fb.control<number | null>(null, { validators: [Validators.required] }),
   nomeCurso: this.fb.control<string>('', { validators: [Validators.required] }),
 
-  // ✅ participante (FK + nome)
+  validadeCertificado: this.fb.control<number | null>(null),
+
   participanteCodigo: this.fb.control<number | null>(null, { validators: [Validators.required] }),
   participanteNome: this.fb.control<string>('', { validators: [Validators.required] }),
 
@@ -62,7 +63,9 @@ export class LancamentosComponent {
 
   anexo: this.fb.control<File | null>(null),
 });
-
+this.form.get('dataRealizacao')!.valueChanges.subscribe(() => {
+  this.calcularDataVencimento();
+});
     // ✅ Listener do autocomplete no campo nomeCurso
    this.form.get('nomeCurso')!.valueChanges
   .pipe(
@@ -143,17 +146,19 @@ fecharListaParticipantesComDelay() {
 
   // ✅ Método para selecionar curso
   selecionarCurso(curso: CursoListItem) {
-        this.form.patchValue(
-      {
-        cursoId: curso.id,
-        nomeCurso: curso.nome_curso
-      },
-      {
-        emitEvent: false
-      }
-    );
-    this.mostrarListaCursos = false;
-  }
+  this.form.patchValue(
+    {
+      cursoId: curso.id,
+      nomeCurso: curso.nome_curso,
+      validadeCertificado: curso.validadeCertificado
+    },
+    { emitEvent: false }
+  );
+
+  this.mostrarListaCursos = false;
+
+  this.calcularDataVencimento();
+}
 
     onFileSelected(event: Event) {
      const input = event.target as HTMLInputElement;
@@ -294,5 +299,30 @@ private mostrarAlertSucesso() {
   this.alertTimer = setTimeout(() => {
     this.mostrarErro = false;
   }, 3000);
+}
+calcularDataVencimento(): void {
+  const dataRealizacao = this.form.controls.dataRealizacao.value;
+  const validadeMeses = this.form.controls.validadeCertificado.value;
+
+  console.log('Data:', dataRealizacao);
+  console.log('Validade:', validadeMeses);
+
+  if (!dataRealizacao || !validadeMeses) {
+    return;
+  }
+
+  const [ano, mes, dia] = dataRealizacao.split('-').map(Number);
+
+  const data = new Date(ano, mes - 1, dia);
+  data.setMonth(data.getMonth() + Number(validadeMeses));
+
+  const anoFinal = data.getFullYear();
+  const mesFinal = String(data.getMonth() + 1).padStart(2, '0');
+  const diaFinal = String(data.getDate()).padStart(2, '0');
+
+  this.form.controls.dataVencimento.setValue(
+    `${anoFinal}-${mesFinal}-${diaFinal}`,
+    { emitEvent: false }
+  );
 }
 }

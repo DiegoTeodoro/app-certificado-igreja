@@ -1,0 +1,52 @@
+<div class="dashboard">
+  <div class="dashboard-header">
+    <div>
+      <h1>Bem-vindo, {{ usuario?.login || 'Usuário' }}!</h1>
+      <p>Sistema de Cursos e Certificados</p>
+    </div>
+  </div>
+
+  <div class="cards">
+    <a class="card-info" *ngFor="let card of cards" [routerLink]="card.rota">
+      <div class="icon">
+        <i class="bi" [ngClass]="card.icone"></i>
+      </div>
+
+      <div>
+        <span>{{ card.titulo }}</span>
+        <strong>{{ card.total }}</strong>
+      </div>
+    </a>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2><i class="bi bi-exclamation-triangle-fill"></i> Certificados a vencer</h2>
+      <p>Nenhum certificado carregado no dashboard.</p>
+      <a routerLink="/relatorio-certificado-vencer">Ver relatório</a>
+    </div>
+
+    <div class="panel">
+      <h2><i class="bi bi-clock-history"></i> Últimos lançamentos</h2>
+      <p>Nenhum lançamento carregado no dashboard.</p>
+      <a routerLink="/lancamentos">Novo lançamento</a>
+    </div>
+  </div>
+
+  <div class="atalhos">
+    <a routerLink="/novo-curso">
+      <i class="bi bi-plus-circle-fill"></i>
+      Novo Curso
+    </a>
+
+    <a routerLink="/novo-participante">
+      <i class="bi bi-person-plus-fill"></i>
+      Novo Participante
+    </a>
+
+    <a routerLink="/lancamentos">
+      <i class="bi bi-file-earmark-plus-fill"></i>
+      Novo Lançamento
+    </a>
+  </div>
+</div>

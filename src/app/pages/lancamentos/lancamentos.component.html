@@ -82,7 +82,8 @@
 
         <div class="form-group">
           <label>Data da realização *</label>
-          <input type="date" formControlName="dataRealizacao" />
+        <input
+          type="date"formControlName="dataRealizacao" (change)="calcularDataVencimento()" />
         </div>
 
         <div class="form-group">

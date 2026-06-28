@@ -3,10 +3,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 // ✅ item simples para autocomplete/listagem rápida
-export type CursoListItem = {
+export interface CursoListItem {
   id: number;
   nome_curso: string;
-};
+  validadeCertificado: number;
+}
 
 // ✅ item completo para relatório/lista
 export type CursoRelatorioItem = {

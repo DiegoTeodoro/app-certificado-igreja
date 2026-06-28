@@ -43,7 +43,7 @@ export class LoginAcessoComponent {
 
     next: (res) => {
       this.authService.salvarSessao(res.usuario);
-      this.router.navigate(['/cursos']);
+      this.router.navigate(['/home']);
     },
 
     error: (e) => {
