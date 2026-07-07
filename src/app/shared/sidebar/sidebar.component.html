@@ -1,11 +1,12 @@
-<aside class="sidebar">
 <a class="sidebar__item"
    routerLink="/home"
    routerLinkActive="active">
 
+  <div class="menu-title">
     <i class="bi bi-house-fill"></i>
+    <span>Home</span>
+  </div>
 
-    Home
 </a>
   <!-- ================== CADASTRO ================== -->
  <div class="sidebar__section-title"
@@ -65,17 +66,23 @@
       Certificados
   </a>
 
-  <a class="sidebar__item" routerLink="/lancamentos"routerLinkActive="active">
+  <!--<a class="sidebar__item" routerLink="/lancamentos"routerLinkActive="active">
      <i class="bi bi-file-earmark-plus-fill"></i>
       Lançamentos
-  </a>
-
+  </a>-->
+<a class="sidebar__item" routerLink="/lista-lancamentos" routerLinkActive="active">
+  <i class="bi bi-list-check"></i>
+  Lançamentos
+</a>
 </nav>
 
  <div class="sidebar__section-title"
      (click)="toggleRelatorio()">
- <i class="bi bi-bar-chart-fill"></i>
-  Relatórios
+
+  <div class="menu-title">
+    <i class="bi bi-bar-chart-fill"></i>
+    <span>Relatórios</span>
+  </div>
 
   <span class="arrow">
     {{ relatorioAberto ? '▼' : '▶' }}

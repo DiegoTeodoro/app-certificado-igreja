@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { LancamentoService, LancamentoCreateRequest } from '../../../core/lancamento.service';
+import { LancamentoService, LancamentoCreateRequest, LancamentoAnexo } from '../../../core/lancamento.service';
 import { CursoService, CursoListItem } from '../../../core/curso.service';
 import { ParticipanteListItem, ParticipanteService } from '../../../core/participante.service';
 
@@ -19,8 +19,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrl: './lancamentos.component.scss'
 })
 export class LancamentosComponent {
-  form;
 
+  form;
   mostrarErro = false;
   mensagemErro = '';
 
@@ -36,7 +36,8 @@ export class LancamentosComponent {
 
   mostrarListaParticipantes = false;
   participantesFiltrados: ParticipanteListItem[] = [];
-  
+  lancamentoEditandoCodigo: number | null = null;
+anexosLancamento: LancamentoAnexo[] = [];
   constructor(
     private fb: FormBuilder,
     private lancamentoService: LancamentoService,
@@ -117,7 +118,27 @@ this.form.get('dataRealizacao')!.valueChanges.subscribe(() => {
     this.mostrarListaParticipantes = lista.length > 0;
   });
 
+const state = history.state;
 
+if (state?.lancamento) {
+ 
+  const l = state.lancamento;
+
+  this.lancamentoEditandoCodigo = l.codigo;
+
+  this.form.patchValue({
+    
+    cursoId: l.cursoId,
+    nomeCurso: l.nomeCurso,
+    participanteCodigo: l.participanteCodigo,
+    participanteNome: l.participanteNome,
+    instrutor: l.instrutor,
+    dataRealizacao: l.dataRealizacao?.substring(0, 10),
+    dataVencimento: l.dataVencimento?.substring(0, 10),
+    descricao: l.descricao || ''
+  }, { emitEvent: false });
+   this.carregarAnexosLancamento(l.codigo);
+}
   }
   
   selecionarParticipante(p: ParticipanteListItem) {
@@ -202,6 +223,46 @@ if (!participanteCodigo) {
     data_vencimento: this.form.value.dataVencimento!,
     descricao: this.form.value.descricao ?? null,
   };
+  const usuario = JSON.parse(sessionStorage.getItem('usuarioLogado') || '{}');
+
+if (this.lancamentoEditandoCodigo) {
+  this.lancamentoService.atualizar(this.lancamentoEditandoCodigo, {
+    ...payload,
+    usuario_login: usuario?.login || ''
+  }).subscribe({
+    next: () => {
+  if (this.arquivosSelecionados.length > 0 && this.lancamentoEditandoCodigo) {
+    const fd = new FormData();
+
+    this.arquivosSelecionados.forEach((arquivo) => {
+      fd.append('files', arquivo);
+    });
+
+    this.lancamentoService.uploadAnexos(this.lancamentoEditandoCodigo, fd).subscribe({
+      next: () => {
+        this.mostrarAlertSucesso();
+        this.limpar();
+      },
+      error: () => {
+        this.mensagemErro = 'Lançamento atualizado, mas erro ao enviar anexos.';
+        this.mostrarErroAlert();
+      }
+    });
+
+    return;
+  }
+
+  this.mostrarAlertSucesso();
+  this.limpar();
+},
+    error: (err) => {
+      this.mensagemErro = err?.error?.message || 'Erro ao atualizar lançamento.';
+      this.mostrarErroAlert();
+    }
+  });
+
+  return;
+}
 
   this.lancamentoService.criarLancamento(payload).subscribe({
     next: (resp) => {
@@ -232,8 +293,11 @@ if (!participanteCodigo) {
       this.limpar();
     },
     error: (err) => {
-      this.showError(err?.error?.message ?? 'Erro ao salvar lançamento.');
-    }
+  this.mensagemErro =
+    err?.error?.message || 'Erro ao salvar lançamento.';
+
+  this.mostrarErroAlert();
+}
   });
 }
 
@@ -284,12 +348,37 @@ private mostrarAlertSucesso() {
     this.participantesFiltrados = [];
     this.mostrarListaCursos = false;
     this.mostrarListaParticipantes = false;
+    this.anexosLancamento = [];
+    this.lancamentoEditandoCodigo = null;
   }
 
   onFilesSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.arquivosSelecionados = Array.from(input.files ?? []);
-  }
+  const input = event.target as HTMLInputElement;
+  const novosArquivos = Array.from(input.files ?? []);
+
+  this.arquivosSelecionados = [
+    ...this.arquivosSelecionados,
+    ...novosArquivos
+  ];
+
+  this.form.patchValue({
+    anexo: this.arquivosSelecionados.length > 0
+      ? this.arquivosSelecionados[0]
+      : null
+  });
+
+  input.value = '';
+}
+
+removerArquivoSelecionado(index: number): void {
+  this.arquivosSelecionados.splice(index, 1);
+
+  this.form.patchValue({
+    anexo: this.arquivosSelecionados.length > 0
+      ? this.arquivosSelecionados[0]
+      : null
+  });
+}
 
   private mostrarErroAlert() {
   this.mostrarErro = true;
@@ -324,5 +413,61 @@ calcularDataVencimento(): void {
     `${anoFinal}-${mesFinal}-${diaFinal}`,
     { emitEvent: false }
   );
+}
+carregarAnexosLancamento(codigo: number): void {
+  this.lancamentoService.listarAnexos(codigo).subscribe({
+    next: (anexos) => {
+      this.anexosLancamento = anexos;
+    },
+    error: () => {
+      this.anexosLancamento = [];
+    }
+  });
+}
+
+visualizarAnexo(id: number): void {
+  window.open(this.lancamentoService.urlVisualizarAnexo(id), '_blank');
+}
+
+baixarAnexo(id: number): void {
+  window.open(this.lancamentoService.urlDownloadAnexo(id), '_blank');
+}
+
+substituirAnexo(event: Event, anexoId: number): void {
+  const input = event.target as HTMLInputElement;
+  const arquivo = input.files?.[0];
+
+  if (!arquivo) return;
+
+  this.lancamentoService.substituirAnexo(anexoId, arquivo).subscribe({
+    next: () => {
+      alert('Anexo substituído com sucesso.');
+
+      if (this.lancamentoEditandoCodigo) {
+        this.carregarAnexosLancamento(this.lancamentoEditandoCodigo);
+      }
+    },
+    error: () => {
+      alert('Erro ao substituir anexo.');
+    }
+  });
+}
+    deletarAnexo(id: number): void {
+  if (!confirm('Deseja realmente excluir este anexo?')) {
+    return;
+  }
+
+  this.lancamentoService.deletarAnexo(id).subscribe({
+    next: () => {
+      if (this.lancamentoEditandoCodigo) {
+        this.carregarAnexosLancamento(this.lancamentoEditandoCodigo);
+      }
+      alert('Anexo excluído com sucesso.');
+    },
+    error: () => {
+      alert('Erro ao excluir o anexo.');
+    }
+  });
+
 }
 }

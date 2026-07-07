@@ -1,0 +1,103 @@
+<section class="content">
+  <header class="content-header">
+    <div class="title-wrap">
+      <h1>Lançamentos</h1>
+      <p>Consulte os lançamentos cadastrados.</p>
+    </div>
+  </header>
+
+  <div class="card">
+    <div class="toolbar">
+      <div class="form-group search">
+        <label>Pesquisar</label>
+        <input
+          type="text"
+          [formControl]="form.controls.q"
+          placeholder="Digite curso, participante ou instrutor..."
+        />
+      </div>
+
+      <div class="toolbar-actions">
+        <button type="button" class="btn btn-secondary" (click)="limpar()">
+          Limpar
+        </button>
+
+        <button type="button" class="btn btn-primary" (click)="novoLancamento()">
+          Novo Lançamento
+        </button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Curso</th>
+            <th>Participante</th>
+            <th>Instrutor</th>
+            <th>Data Realização</th>
+            <th>Data Vencimento</th>
+            <th style="width: 120px;">Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let l of lancamentosPaginados; let i = index" [class.row-alt]="i % 2 === 1">
+            <td>{{ l.nomeCurso }}</td>
+            <td>{{ l.participanteNome }}</td>
+            <td>{{ l.instrutor }}</td>
+            <td>{{ l.dataRealizacao | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ l.dataVencimento | date: 'dd/MM/yyyy' }}</td>
+
+            <td class="acoes">
+              <button
+                type="button"
+                class="btn btn-mini btn-primary"
+                (click)="editar(l)">
+                Editar
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="lancamentosPaginados.length === 0">
+            <td colspan="6" class="empty">
+              Nenhum lançamento encontrado.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="panel-foot">
+      <div>Total: {{ totalRegistros }}</div>
+
+      <div class="pagination">
+        <label>Itens por página</label>
+
+        <select [formControl]="form.controls.itensPorPagina">
+          <option *ngFor="let opcao of opcoesPaginacao" [value]="opcao">
+            {{ opcao }}
+          </option>
+        </select>
+
+        <button
+          type="button"
+          class="page-btn"
+          (click)="paginaAnterior()"
+          [disabled]="paginaAtual === 1">
+          Anterior
+        </button>
+
+        <span>Página {{ paginaAtual }} de {{ totalPaginas }}</span>
+
+        <button
+          type="button"
+          class="page-btn"
+          (click)="proximaPagina()"
+          [disabled]="paginaAtual === totalPaginas">
+          Próxima
+        </button>
+      </div>
+    </footer>
+  </div>
+</section>

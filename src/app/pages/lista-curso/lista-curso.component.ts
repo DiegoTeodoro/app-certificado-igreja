@@ -52,10 +52,11 @@ opcoesPaginacao = [10, 25, 50, 100];
       )
       .subscribe({
         next: (lista) => {
-          this.cursos = lista;
-          this.paginaAtual = 1;
-          this.carregando = false;
-        },
+          this.cursos = this.ordenarCursos(lista);
+
+        this.paginaAtual = 1;
+        this.carregando = false;
+      },
         error: (e) => {
           this.erro = e?.message ?? 'Erro ao carregar cursos.';
           this.cursos = [];
@@ -129,5 +130,22 @@ proximaPagina(): void {
     this.paginaAtual++;
   }
 }
-  
+  private numeroNR(nomeCurso: string): number {
+  const match = nomeCurso.match(/NR\s*-?\s*(\d+)/i);
+
+  return match ? Number(match[1]) : 9999;
+}
+
+private ordenarCursos(lista: CursoRelatorioItem[]): CursoRelatorioItem[] {
+  return (lista ?? []).sort((a, b) => {
+    const numeroA = this.numeroNR(a.nomeCurso);
+    const numeroB = this.numeroNR(b.nomeCurso);
+
+    if (numeroA !== numeroB) {
+      return numeroA - numeroB;
+    }
+
+    return a.nomeCurso.localeCompare(b.nomeCurso, 'pt-BR');
+  });
+}
 }

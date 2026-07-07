@@ -228,14 +228,16 @@
 }
 
 .btn.outline {
-  background: #fff;
-  color: var(--text);
-  border-color: var(--border);
+  background: #198754;
+  color: #fff;
+  border: 1px solid #198754;
 }
 
 .btn.outline:hover {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 4px var(--focus);
+  background: #157347;
+  border-color: #157347;
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.25);
 }
 
 /* ==============================
@@ -318,7 +320,36 @@
   font-size: 12px;
   background: rgba(63, 134, 168, 0.03);
 }
+.dropdown {
+  position: relative;
+}
 
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 44px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.12);
+  min-width: 160px;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.dropdown-menu button {
+  width: 100%;
+  border: 0;
+  background: #fff;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.dropdown-menu button:hover {
+  background: #f1f5f9;
+}
 /* ==============================
    RESPONSIVO
 ============================== */
@@ -357,4 +388,45 @@
   .grid {
     min-width: 920px;
   }
+
+}
+.anexo-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.btn-anexo {
+  border: 0;
+  background: #3f86a8;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-anexo:hover {
+  background: #35779c;
+}
+
+.btn-anexo.substituir {
+  background: #198754;
+}
+
+.btn-anexo.substituir:hover {
+  background: #157347;
+}
+
+.btn-anexo i {
+  line-height: 1;
 }

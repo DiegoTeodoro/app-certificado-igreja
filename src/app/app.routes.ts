@@ -81,6 +81,12 @@ export const routes: Routes = [
         (m) => m.CadastroUsuarioComponent
       ),
   },
+  {
+  path: 'lista-lancamentos',
+  loadComponent: () =>
+    import('./pages/lista-lancamentos/lista-lancamentos.component')
+      .then(m => m.ListaLancamentosComponent)
+},
   // ✅ Relatórios (ADICIONAR)
   {
     path: "relatorio-participantes",

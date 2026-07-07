@@ -1,38 +1,40 @@
 <div class="page-container">
-
   <div class="page-header">
     <h1>Lançamentos</h1>
     <p>Cadastre o curso realizado pelo participante e anexe o arquivo.</p>
   </div>
 
   <!-- ✅ ALERT PADRÃO (igual outras telas) -->
-<div *ngIf="mostrarAlert" class="alert-cursos" role="alert">
-  <div><strong>Sucesso!</strong> Lançamento salvo com sucesso!</div>
+  <div *ngIf="mostrarAlert" class="alert-cursos" role="alert">
+    <div><strong>Sucesso!</strong> Lançamento salvo com sucesso!</div>
 
-  <button type="button" class="alert-close" (click)="fecharAlert()" aria-label="Close">
-    ✕
-  </button>
-</div>
+    <button
+      type="button"
+      class="alert-close"
+      (click)="fecharAlert()"
+      aria-label="Close"
+    >
+      ✕
+    </button>
+  </div>
 
-<div *ngIf="mostrarErro" class="alert-cursos erro" role="alert">
-  <div><strong>Atenção!</strong> {{ mensagemErro }}</div>
+  <div *ngIf="mostrarErro" class="alert-cursos erro" role="alert">
+    <div><strong>Atenção!</strong> {{ mensagemErro }}</div>
 
-  <button
-    type="button"
-    class="alert-close"
-    (click)="mostrarErro = false"
-    aria-label="Close"
-  >
-    ✕
-  </button>
-</div>
+    <button
+      type="button"
+      class="alert-close"
+      (click)="mostrarErro = false"
+      aria-label="Close"
+    >
+      ✕
+    </button>
+  </div>
 
   <div class="card">
     <form [formGroup]="form">
-
       <!-- Linha 1: Curso 50% | Participante 50% -->
       <div class="row row-50-50">
-
         <!-- CURSO (autocomplete) -->
         <div class="form-group autocomplete">
           <label>Nome do curso *</label>
@@ -65,12 +67,14 @@
           />
 
           <ul class="autocomplete-list" *ngIf="mostrarListaParticipantes">
-            <li *ngFor="let p of participantesFiltrados" (click)="selecionarParticipante(p)">
+            <li
+              *ngFor="let p of participantesFiltrados"
+              (click)="selecionarParticipante(p)"
+            >
               {{ p.nomeCompleto }} <span *ngIf="p.cpf">- {{ p.cpf }}</span>
             </li>
           </ul>
         </div>
-
       </div>
 
       <!-- Linha 2: Instrutor + Datas -->
@@ -82,8 +86,11 @@
 
         <div class="form-group">
           <label>Data da realização *</label>
-        <input
-          type="date"formControlName="dataRealizacao" (change)="calcularDataVencimento()" />
+          <input
+            type="date"
+            formControlName="dataRealizacao"
+            (change)="calcularDataVencimento()"
+          />
         </div>
 
         <div class="form-group">
@@ -99,47 +106,128 @@
           <textarea rows="3" formControlName="descricao"></textarea>
         </div>
       </div>
-
       <!-- Linha: Anexos + Botões -->
-      <div class="row row-anexos-acoes">
+      <div class="row-anexos-acoes">
         <div class="form-group">
-          <label>Anexos</label>
-
           <div class="anexo-area">
-            <button type="button" class="btn btn-primary" (click)="filePicker.click()">
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="filePicker.click()"
+            >
               Anexos
             </button>
 
             <input
-            #filePicker
-            type="file"
-            hidden
-            multiple
-            (change)="onFilesSelected($event)"/>
+              #filePicker
+              type="file"
+              hidden
+              multiple
+              (change)="onFilesSelected($event)"
+            />
 
-           <div class="file-name" *ngIf="arquivosSelecionados.length > 0; else semArquivo">
-            <div *ngFor="let arquivo of arquivosSelecionados">
-              {{ arquivo.name }}
+            <div
+              class="file-name"
+              *ngIf="arquivosSelecionados.length > 0; else semArquivo"
+            >
+              <div *ngFor="let arquivo of arquivosSelecionados">
+                {{ arquivo.name }}
+              </div>
             </div>
-          </div>
+
             <ng-template #semArquivo>
               <span class="file-name">Nenhum arquivo selecionado</span>
             </ng-template>
           </div>
         </div>
-
-        <div class="actions actions-inline">
-          <button type="button" class="btn btn-secondary" (click)="limpar()">
-            Limpar
-          </button>
-
-          <button type="button" class="btn btn-primary" (click)="salvar()">
-            Salvar
-          </button>
-        </div>
       </div>
 
+      <!-- TABELA ABAIXO DO BOTÃO ANEXOS -->
+      <div
+        class="anexos-tabela"
+        *ngIf="lancamentoEditandoCodigo || arquivosSelecionados.length > 0"
+      >
+        <div class="anexos-title">📎 Anexos</div>
+
+        <table class="table-anexos">
+          <thead>
+            <tr>
+              <th>Nome do arquivo</th>
+              <th>Data</th>
+              <th class="acoes-anexo">Ações</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let anexo of anexosLancamento">
+              <td>{{ anexo.nomeOriginal }}</td>
+              <td>{{ anexo.uploadedAt | date:'dd/MM/yyyy HH:mm' }}</td>
+
+              <td class="acoes-anexo">
+                <button
+                  type="button"
+                  class="btn-icon baixar"
+                  (click)="baixarAnexo(anexo.id)">
+                  <i class="bi bi-download"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="btn-icon visualizar"
+                  (click)="visualizarAnexo(anexo.id)">
+                  <i class="bi bi-eye"></i>
+                </button>
+
+                <label class="btn-icon substituir">
+                  <i class="bi bi-arrow-repeat"></i>
+                  <input
+                    type="file"
+                    hidden
+                    (change)="substituirAnexo($event, anexo.id)"
+                  />
+                </label>
+
+                <button
+                  type="button"
+                  class="btn-icon excluir"
+                  (click)="deletarAnexo(anexo.id)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+            <tr *ngFor="let arquivo of arquivosSelecionados; let i = index">
+              <td>{{ arquivo.name }}</td>
+              <td>Aguardando salvar</td>
+
+              <td class="acoes-anexo">
+                <button
+                  type="button"
+                  class="btn-icon excluir"
+                  (click)="removerArquivoSelecionado(i)"
+                >
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+            <tr
+              *ngIf="anexosLancamento.length === 0 && arquivosSelecionados.length === 0"
+            >
+              <td colspan="3" class="sem-anexo">
+                Nenhum anexo cadastrado para este lançamento.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="actions actions-inline">
+        <button type="button" class="btn btn-secondary" (click)="limpar()">
+          Limpar
+        </button>
+
+        <button type="button" class="btn btn-primary" (click)="salvar()">
+          {{ lancamentoEditandoCodigo ? 'Atualizar' : 'Salvar' }}
+        </button>
+      </div>
     </form>
   </div>
-
 </div>

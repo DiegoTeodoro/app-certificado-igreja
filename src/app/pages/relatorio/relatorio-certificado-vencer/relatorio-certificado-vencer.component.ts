@@ -28,14 +28,14 @@ export class RelatorioCertificadoVencerComponent implements OnInit {
   status = '';
   relatorio: RelatorioItem[] = [];
   menuImprimirAberto = false;
-
+     curso = '';
   ngOnInit(): void {
     this.carregarRelatorio();
   }
 
-  carregarRelatorio(): void {
+ carregarRelatorio(): void {
   this.certificadoService
-    .listarRelatorioVencimento(this.igreja, this.status)
+    .listarRelatorioVencimento(this.igreja, this.status, this.curso)
     .subscribe({
       next: (lista) => {
         this.relatorio = lista ?? [];
@@ -60,11 +60,12 @@ get relatorioFiltrado(): RelatorioItem[] {
   return this.relatorio.slice(inicio, fim);
 }
 
-  limpar(): void {
-    this.igreja = '';
-    this.status = '';
-    this.carregarRelatorio();
-  }
+ limpar(): void {
+  this.igreja = '';
+  this.status = '';
+  this.curso = '';
+  this.carregarRelatorio();
+}
 
   alternarMenuImprimir(): void {
     this.menuImprimirAberto = !this.menuImprimirAberto;

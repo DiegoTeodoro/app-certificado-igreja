@@ -17,7 +17,15 @@
           (keyup.enter)="carregarRelatorio()"
         />
       </div>
-
+<div class="form-group">
+  <label>Curso</label>
+  <input
+    type="text"
+    [(ngModel)]="curso"
+    placeholder="Digite o curso..."
+    (keyup.enter)="carregarRelatorio()"
+  />
+</div>
       <div class="form-group status-filter">
         <label>Status</label>
         <select [(ngModel)]="status">
